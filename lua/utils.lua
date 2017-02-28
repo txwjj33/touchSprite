@@ -59,3 +59,7 @@ end
 function loge(msg)
     log(string.format("[E]%s", msg), logName)
 end
+
+function pos(x, y)
+    return {x = x, y = y}
+end
