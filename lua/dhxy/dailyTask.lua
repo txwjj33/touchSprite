@@ -5,15 +5,16 @@
 require("utils")
 require("dhxy.functions")
 require("dhxy.gangs")
+require("dhxy.masterTask")
 
 local function main()
     if not initApp() then return end
 
     -- 开始帮派任务
-    enterGangs()
-    watchGangsTask()
+    if enterGangs() then watchGangsTask() end
 
     -- 开始师门任务
+    if enterMasterMap() then watchMasterTask() end
 end
 
 main()

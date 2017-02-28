@@ -3,7 +3,7 @@
 --备注：
 
 -- 一个打五个的对话按钮
-local fightButtonData = {
+local colorsFightButton = {
     {  449, 1270, 0xfff7e6},
     {  408, 1270, 0xffe3a4},
     {  383, 1270, 0xf7dba4},
@@ -13,15 +13,15 @@ local fightButtonData = {
 }
 
 -- 购买按钮
-local buyButtonData = {
+local colorsBuyButton = {
     {  220, 1243, 0xffffff},
     {  148, 1243, 0x31c6a4},
     {  161, 1558, 0x31ba94},
     {  225, 1553, 0x9cdbbd},
 }
 
--- 帮派任务做完对话框里
-local stopData = {
+-- 帮派任务做完对话框
+local colorsFinished = {
     {  330,  109, 0x94867b},
     {  343,  227, 0x949673},
     {  343,  337, 0xc5b294},
@@ -53,7 +53,7 @@ function enterGangs()
         { 1020,  210, 0xcec2ad},
     }
     -- 点击回到帮派
-    tap(121, 351)
+    click(121, 351)
     mSleep(2000)
     if not checkMultiColor(gangsColors) then
         loge("enterGangs: repalce scene failed")
@@ -73,13 +73,13 @@ function watchGangsTask()
     logi("watchGangsTask: start")
     local finished = false
 
-    local fightEvent = createMultiColorEvent(fightButtonData, nil, function()
-        tap(408, 1500)
+    local fightEvent = createMultiColorEvent(colorsFightButton, nil, function()
+        click(408, 1500)
     end)
-    local buyEvent = createMultiColorEvent(buyButtonData, nil, function()
-        tap(188, 1429)
+    local buyEvent = createMultiColorEvent(colorsBuyButton, nil, function()
+        click(188, 1429)
     end)
-    local stopEvent = createMultiColorEvent(stopData, 6, function()
+    local stopEvent = createMultiColorEvent(colorsFinished, 6, function()
         logi("watchGangsTask: finished")
         finished = true
     end)

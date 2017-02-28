@@ -34,12 +34,24 @@ local colorsReconnect = {
     {  350,  662, 0xffe7a4},
 }
 
-local colorsLocalMap = {
-    {  919,  289, 0xe6ae7b},
-    {  880,  290, 0x52aade},
-    {  777,  293, 0xf7ca84},
-    {  783,  323, 0x19db94},
-    {  788,  292, 0xefae8c},
+-- 本地地图数据
+colorsLocalMap = {
+    {  944,  663, 0xf7dbc5},
+    {  941,  774, 0xefd2b5},
+    {  959,  842, 0x9c9a94},
+    { 1015, 1058, 0xa4ae9c},
+    {  942, 1224, 0xe6ceb5},
+    {  989, 1113, 0xb59273},
+}
+
+-- 世界地图
+colorsWorldMap = {
+    { 1044, 1858, 0xe6716b},
+    { 1031, 1868, 0xef7173},
+    { 1015, 1855, 0xe67173},
+    { 1017, 1883, 0xe6716b},
+    { 1041, 1880, 0xe67173},
+    { 1044, 1867, 0xefdbbd},
 }
 
 -- 启动大话西游
@@ -56,15 +68,14 @@ function rundhxy()
         elseif multiColor(colorsStartGameButton) then
             -- 在开始游戏界面
             logi("rundhxy:enter start game")
-            tap(176, 967)
+            click(176, 967)
             mSleep(10 * 1000)
         elseif multiColor(colorsReconnect) then
             -- 连接网络界面
             logi("rundhxy:enter connect scenes")
-            tap(373, 1130)
+            click(373, 1130)
             mSleep(10 * 1000)
         else
-            logd("time:" .. os.time() - time)
             if os.time() - time > 3 * 60 then
                 -- 3分钟还没进去，提示
                 loge("rundhxy:enter game timeout!!")
@@ -161,7 +172,7 @@ end
 -- 点击按钮，弹出某个对话框
 -- colors: 用于检测对话框是否真的弹出
 function showDialog(buttonPos, colors, timeout)
-    tap(buttonPos.x, buttonPos.y)
+    click(buttonPos)
     mSleep(100)
     if colors then
         return checkMultiColor(colors, timeout)
@@ -170,14 +181,9 @@ function showDialog(buttonPos, colors, timeout)
     end
 end
 
+-- 打开世界地图
 function enterWorldMap()
-    local colors = {
-        {  628,  280, 0x6bce7b},
-        {  898,  390, 0xbdcede},
-        {  389,  567, 0xefb663},
-        {  403,  979, 0xadce4a},
-    }
-    if showDialog(gPosButtonWorldMap, colors) then
+    if showDialog(gPosButtonWorldMap, colorsWorldMap) then
         logi("enterWorldMap success")
         return true
     else
@@ -186,6 +192,7 @@ function enterWorldMap()
     end
 end
 
+-- 打开本地地图
 function enterLocalMap()
     if showDialog(gPosButtonLocalMap, colorsLocalMap) then
         logi("enterLocalMap success")
@@ -196,22 +203,74 @@ function enterLocalMap()
     end
 end
 
--- 进入本地地图，点击某个点，并关闭本地地图
-function toPosByLocalMap(x, y)
-    if not enterLocalMap() then return false end
-    tap(x, y)
-    mSleep(50)
-    -- 关闭地图
-    tap(968, 1565)
-    mSleep(500)
-    -- 本地地图没有关闭
-    if multiColor(colorsLocalMap) then
-        loge("toPosByLocalMap: local map not closed")
-        return false
+-- 关闭世界地图
+function closeWorldMap()
+    if multiColor(colorsWorldMap) then
+        click(1031, 1871)
+        mSleep(100)
+        if checkMultiColor(colorsWorldMap) then
+            loge("closeWorldMap error")
+            return false
+        else
+            return true
+        end
     else
         return true
     end
 end
 
+-- 关闭本地地图
+function closeLocalMap()
+    if multiColor(colorsLocalMap) then
+        click(968, 1565)
+        mSleep(100)
+        if checkMultiColor(colorsLocalMap) then
+            loge("closeLocalMap error")
+            return false
+        else
+            return true
+        end
+    else
+        return true
+    end
+end
 
+-- 进入本地地图，点击某个点，并关闭本地地图
+function toPosByLocalMap(x, y)
+    if not enterLocalMap() then return false end
+    click(x, y)
+    mSleep(50)
+    if closeLocalMap() then
+        return true
+    else
+        loge("toPosByLocalMap: local map not closed")
+        return false
+    end
+end
 
+-- 进入世界地图，点击某个场景，再点击小地图寻路，最后关闭小地图
+function toPosByWorldMap(worldPos, localPos)
+    if not enterWorldMap() then return false end
+
+    click(worldPos)
+    mSleep(100)
+    if checkMultiColor(colorsLocalMap) then
+        -- 本地地图已弹出
+        click(localPos)
+        mSleep(100)
+        if closeLocalMap() then
+            if closeWorldMap() then
+                return true
+            else
+                loge("toPosByWorldMap: world map not closed")
+                return false
+            end
+        else
+            loge("toPosByWorldMap: local map not closed")
+            return false
+        end
+    else
+        loge("toPosByWorldMap: local map not open")
+        return false
+    end
+end

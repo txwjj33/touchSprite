@@ -8,7 +8,7 @@ screenW, screenH = 1920, 1080
 -- 依次点击多个点
 function clickMultiPoint(points)
     for _, v in ipairs(points) do
-        tap(v[1], v[2])
+        click(v)
         mSleep(30)
     end
 end
@@ -35,7 +35,7 @@ function unlockPhone()
     mSleep(500)
 
     -- 输入密码
-    local t = {{251, 1057}, {251, 1057}, {544, 1057}, {838, 1057}}
+    local t = {pos(251, 1057), pos(251, 1057), pos(544, 1057), pos(838, 1057)}
     clickMultiPoint(t)
 end
 
@@ -62,4 +62,14 @@ end
 
 function pos(x, y)
     return {x = x, y = y}
+end
+
+-- 两个参数，是x, y
+-- 一个参数，是pos类型的
+function click(param1, param2)
+    if param2 then
+        tap(param1, param2)
+    else
+        tap(param1.x, param1.y)
+    end
 end
