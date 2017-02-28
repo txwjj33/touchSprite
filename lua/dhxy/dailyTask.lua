@@ -15,6 +15,14 @@ local function main()
 
     -- 开始师门任务
     if enterMasterMap() then watchMasterTask() end
+
+    -- 开始五环任务
+    if toPosByWorldMap(pos(613, 1135), pos(416, 1176)) then
+        mSleep(5 * 1000)
+        click(304, 1606)
+    else
+        loge("start wuhuan error")
+    end
 end
 
 main()
