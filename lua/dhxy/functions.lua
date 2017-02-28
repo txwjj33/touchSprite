@@ -2,6 +2,9 @@
 --时间：2017.2.28
 --备注：
 
+require("utils")
+require("dhxy.constants")
+
 -- 主界面左上角的图标
 local colorsMapButton = {
     { 1054,   38, 0xefc26b},
@@ -31,12 +34,20 @@ local colorsReconnect = {
     {  350,  662, 0xffe7a4},
 }
 
+local colorsLocalMap = {
+    {  919,  289, 0xe6ae7b},
+    {  880,  290, 0x52aade},
+    {  777,  293, 0xf7ca84},
+    {  783,  323, 0x19db94},
+    {  788,  292, 0xefae8c},
+}
+
 -- 启动大话西游
 function rundhxy()
     local time = os.time()
     runApp("com.netease.dhxy.wdj")
     logd("rundhxy:run app")
-    mSleep(20 * 1000)
+    mSleep(10 * 1000)
     while true do
         if multiColor(colorsMapButton) then
             logi("rundhxy:enter game")
@@ -70,7 +81,7 @@ end
 function initApp()
     startLog("dhxy")
     logi("script begin!")
-    unlock()
+    unlockPhone()
     mSleep(50)
     return rundhxy()
 end
@@ -88,7 +99,7 @@ function createMultiColorEvent(data, maxCount, callback)
     -- 执行一次检测
     -- 返回值：0-识别成功，1-检测成功，2-检测失败
     t.check = function(self)
-        if multiColor(data, 0.9) then
+        if multiColor(data) then
             count = count + 1
             if count >= maxCount then
                 if callback then callback() end
@@ -120,9 +131,87 @@ function checkAllEvents(events)
             for j, e in ipairs(events) do
                 if j ~= i then e:reset() end
             end
-            return
+            return true
         else
             event:reset()
         end
     end
+
+    return false
 end
+
+-- 检查colors颜色是否找到，没找到持续等待
+-- timeout为过期时间
+function checkMultiColor(colors, timeout)
+    timeout = timeout or 2
+    local time = os.time()
+    while true do
+        if multiColor(colors) then
+            return true
+        else
+            if os.time() - time > timeout then
+                return false
+            else
+                mSleep(100)
+            end
+        end
+    end
+end
+
+-- 点击按钮，弹出某个对话框
+-- colors: 用于检测对话框是否真的弹出
+function showDialog(buttonPos, colors, timeout)
+    tap(buttonPos.x, buttonPos.y)
+    mSleep(100)
+    if colors then
+        return checkMultiColor(colors, timeout)
+    else
+        return true
+    end
+end
+
+function enterWorldMap()
+    local colors = {
+        {  628,  280, 0x6bce7b},
+        {  898,  390, 0xbdcede},
+        {  389,  567, 0xefb663},
+        {  403,  979, 0xadce4a},
+    }
+    if showDialog(gPosButtonWorldMap, colors) then
+        logi("enterWorldMap success")
+        return true
+    else
+        loge("enterWorldMap failed")
+        return false
+    end
+end
+
+function enterLocalMap()
+    if showDialog(gPosButtonLocalMap, colorsLocalMap) then
+        logi("enterLocalMap success")
+        return true
+    else
+        loge("enterLocalMap failed")
+        return false
+    end
+end
+
+-- 进入本地地图，点击某个点，并关闭本地地图
+function toPosByLocalMap(x, y)
+    if not enterLocalMap() then return false end
+    tap(x, y)
+    mSleep(50)
+    -- 关闭地图
+    tap(968, 1565)
+    mSleep(500)
+    -- 本地地图没有关闭
+    if multiColor(colorsLocalMap) then
+        loge("toPosByLocalMap: local map not closed")
+        return false
+    else
+        return true
+    end
+end
+
+
+
