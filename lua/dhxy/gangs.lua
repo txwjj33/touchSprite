@@ -3,7 +3,7 @@
 --备注：
 
 -- 一个打五个的对话按钮
-local colorsFightButton = {
+local fightButtonColors = {
     {  449, 1270, 0xfff7e6},
     {  408, 1270, 0xffe3a4},
     {  383, 1270, 0xf7dba4},
@@ -13,7 +13,7 @@ local colorsFightButton = {
 }
 
 -- 购买按钮
-local colorsBuyButton = {
+local buyButtonColors = {
     {  220, 1243, 0xffffff},
     {  148, 1243, 0x31c6a4},
     {  161, 1558, 0x31ba94},
@@ -21,7 +21,7 @@ local colorsBuyButton = {
 }
 
 -- 帮派任务做完对话框
-local colorsFinished = {
+local finishedColors = {
     {  330,  109, 0x94867b},
     {  343,  227, 0x949673},
     {  343,  337, 0xc5b294},
@@ -73,13 +73,13 @@ function watchGangsTask()
     logi("watchGangsTask: start")
     local finished = false
 
-    local fightEvent = createMultiColorEvent(colorsFightButton, nil, function()
+    local fightEvent = createMultiColorEvent(fightButtonColors, nil, function()
         click(408, 1500)
     end)
-    local buyEvent = createMultiColorEvent(colorsBuyButton, nil, function()
+    local buyEvent = createMultiColorEvent(buyButtonColors, nil, function()
         click(188, 1429)
     end)
-    local stopEvent = createMultiColorEvent(colorsFinished, 6, function()
+    local stopEvent = createMultiColorEvent(finishedColors, 6, function()
         logi("watchGangsTask: finished")
         -- 点击屏幕中央，让完成的对话框消失
         click(display.center)
