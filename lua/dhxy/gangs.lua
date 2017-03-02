@@ -39,8 +39,8 @@ function enterGangs()
         {  146, 1294, 0xefe3ce},
     }
     -- 打开帮派界面
-    if not showDialog(gPosButtonGangs, colors) then
-        loge("enterGangs: gPosButtonGangs failed")
+    if not showDialog(gGangsButtonPos, colors) then
+        loge("enterGangs: gGangsButtonPos failed")
         return false
     end
 

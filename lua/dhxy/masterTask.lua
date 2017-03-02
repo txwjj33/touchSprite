@@ -3,7 +3,7 @@
 --备注：
 
 -- 一个打五个的对话按钮
-local colorsFightButton = {
+local fightButtonColors = {
     {  449, 1270, 0xfff7e6},
     {  408, 1270, 0xffe3a4},
     {  383, 1270, 0xf7dba4},
@@ -13,7 +13,7 @@ local colorsFightButton = {
 }
 
 -- 购买按钮
-local colorsBuyButton = {
+local buyButtonColors = {
     {  220, 1243, 0xffffff},
     {  148, 1243, 0x31c6a4},
     {  161, 1558, 0x31ba94},
@@ -21,7 +21,7 @@ local colorsBuyButton = {
 }
 
 -- 师门任务做完对话框里
-local colorsFinished = {
+local finishedColors = {
     {  330,  109, 0x94867b},
     {  343,  227, 0x949673},
     {  343,  337, 0xc5b294},
@@ -30,7 +30,7 @@ local colorsFinished = {
     {   16,  422, 0x948e73},
 }
 
-local colorsEnterMasterMap = {
+local enterMasterMapColors = {
     {  623,  804, 0xbdc24a},
     {  601,  855, 0xdee342},
     {  620,  901, 0xe6eb4a},
@@ -45,7 +45,7 @@ function enterMasterMap()
     -- 点击方寸山
     click(669, 275)
     mSleep(100)
-    if checkMultiColor(colorsLocalMap) then
+    if checkMultiColor(localMapColors) then
         -- 本地地图已弹出，点击斜月三星洞的位置
         -- 点一次进不去，走到附近以后再点一次
         click(766, 629)
@@ -53,7 +53,7 @@ function enterMasterMap()
         click(763, 634)
         mSleep(100)
         -- 等待走到斜月三星洞，判断是否进入
-        if checkMultiColor(colorsEnterMasterMap) then
+        if checkMultiColor(enterMasterMapColors) then
             -- 点击菩提祖师的位置
             click(619, 830)
             mSleep(50)
@@ -79,13 +79,13 @@ function watchMasterTask()
     logi("watchMasterTask: start")
     local finished = false
 
-    local fightEvent = createMultiColorEvent(colorsFightButton, nil, function()
+    local fightEvent = createMultiColorEvent(fightButtonColors, nil, function()
         click(408, 1500)
     end)
-    local buyEvent = createMultiColorEvent(colorsBuyButton, nil, function()
+    local buyEvent = createMultiColorEvent(buyButtonColors, nil, function()
         click(188, 1429)
     end)
-    local stopEvent = createMultiColorEvent(colorsFinished, 6, function()
+    local stopEvent = createMultiColorEvent(finishedColors, 6, function()
         logi("watchMasterTask: finished")
         -- 点击屏幕中央，让完成的对话框消失
         click(display.center)
