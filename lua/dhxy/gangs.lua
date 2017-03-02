@@ -81,6 +81,8 @@ function watchGangsTask()
     end)
     local stopEvent = createMultiColorEvent(colorsFinished, 6, function()
         logi("watchGangsTask: finished")
+        -- 点击屏幕中央，让完成的对话框消失
+        click(display.center)
         finished = true
     end)
 

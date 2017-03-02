@@ -3,7 +3,33 @@
 --备注：
 require("TSLib")
 
-screenW, screenH = 1920, 1080
+display = {}
+
+local function initDisplay()
+    local width, height = getScreenSize()
+    display.size               = {width = width, height = height}
+    display.width              = display.size.width
+    display.height             = display.size.height
+    display.cx                 = display.width / 2
+    display.cy                 = display.height / 2
+    display.c_left             = -display.width / 2
+    display.c_right            = display.width / 2
+    display.c_top              = display.height / 2
+    display.c_bottom           = -display.height / 2
+    display.left               = 0
+    display.right              = display.width
+    display.top                = display.height
+    display.bottom             = 0
+    display.center             = pos(display.cx, display.cy)
+    display.left_top           = pos(display.left, display.top)
+    display.left_bottom        = pos(display.left, display.bottom)
+    display.left_center        = pos(display.left, display.cy)
+    display.right_top          = pos(display.right, display.top)
+    display.right_bottom       = pos(display.right, display.bottom)
+    display.right_center       = pos(display.right, display.cy)
+    display.top_center         = pos(display.cx, display.top)
+    display.top_bottom         = pos(display.cx, display.bottom)
+end
 
 -- 依次点击多个点
 function clickMultiPoint(points)
@@ -73,3 +99,5 @@ function click(param1, param2)
         tap(param1.x, param1.y)
     end
 end
+
+initDisplay()
