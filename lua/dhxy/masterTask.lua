@@ -31,11 +31,13 @@ local finishedColors = {
 }
 
 local enterMasterMapColors = {
-    {  623,  804, 0xbdc24a},
-    {  601,  855, 0xdee342},
-    {  620,  901, 0xe6eb4a},
-    {  219, 1358, 0x00e3e6},
-    {  202, 1425, 0x08f3f7},
+    {  157,   52, 0x634942},
+    {  164,   45, 0x5a3d3a},
+    {  197,   46, 0x5a413a},
+    {  235,   47, 0x4a2d31},
+    {  263,   49, 0x4a2d31},
+    {  303,   49, 0x63514a},
+    {  322,   49, 0x423129},
 }
 
 -- 进入师门
@@ -75,7 +77,7 @@ function enterMasterMap()
 end
 
 -- 监视师门任务
-function watchMasterTask()
+function watchMasterTask(finishCallback)
     logi("watchMasterTask: start")
     local finished = false
 
@@ -90,6 +92,7 @@ function watchMasterTask()
         -- 点击屏幕中央，让完成的对话框消失
         click(display.center)
         finished = true
+        if finishCallback then finishCallback() end
     end)
 
     local events = {fightEvent, buyEvent, stopEvent}
@@ -101,4 +104,11 @@ function watchMasterTask()
             mSleep(15 * 1000)
         end
     end
+end
+
+-- 直接调用
+if ... == nil then
+    watchMasterTask(function()
+        vibratorTimes()
+    end)
 end

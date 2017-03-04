@@ -22,12 +22,13 @@ local buyButtonColors = {
 
 -- 帮派任务做完对话框
 local finishedColors = {
-    {  330,  109, 0x94867b},
-    {  343,  227, 0x949673},
-    {  343,  337, 0xc5b294},
-    {   30,  108, 0x847d6b},
-    {   16,  206, 0x948e7b},
-    {   16,  422, 0x948e73},
+    {  246,   47, 0x4a3531},
+    {  244,   54, 0x5a4142},
+    {  244,   69, 0x523d3a},
+    {  211,   51, 0x735d5a},
+    {  209,   56, 0x7b6963},
+    {  213,   63, 0x4a2d31},
+    {  206,   47, 0xf7ebd6},
 }
 
 -- 进入帮派
@@ -69,7 +70,7 @@ function enterGangs()
 end
 
 -- 监视帮派任务
-function watchGangsTask()
+function watchGangsTask(finishCallback)
     logi("watchGangsTask: start")
     local finished = false
 
@@ -84,6 +85,7 @@ function watchGangsTask()
         -- 点击屏幕中央，让完成的对话框消失
         click(display.center)
         finished = true
+        if finishCallback then finishCallback() end
     end)
 
     local events = {fightEvent, buyEvent, stopEvent}
@@ -95,4 +97,11 @@ function watchGangsTask()
             mSleep(15 * 1000)
         end
     end
+end
+
+-- 直接调用
+if ... == nil then
+    watchGangsTask(function()
+        vibratorTimes()
+    end)
 end
