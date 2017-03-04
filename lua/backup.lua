@@ -3,28 +3,6 @@
 --备注：
 require("TSLib")
 
-screenW, screenH = 1920, 1080
-
--- 手机纵向坐标转变横向坐标
-function transToH(posx, posy)
-    return posy, screenH - posx
-end
-
--- 手机纵向区域转变横向区域
-function transRectToH(posx1, posy1, posx2, posy2)
-    return posy1, screenH - posx2, posy2, screenH - posx1
-end
-
--- 手机横向坐标转成纵向坐标
-function transToV(posx, posy)
-    return screenH - posy, posx
-end
-
--- 手机横向区域转成纵向区域
-function transRectToV(posx1, posy1, posx2, posy2)
-    return screenH - posy2, posx1, screenH - posy1, posx2
-end
-
 -- 计算两个点的相似度
 local function calColorSimilary(color1, color2)
     local r1 = math.floor(color1 / (256 * 256))

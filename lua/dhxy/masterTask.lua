@@ -2,6 +2,8 @@
 --时间：2017.2.28
 --备注：
 
+require("dhxy.functions")
+
 -- 一个打五个的对话按钮
 local fightButtonColors = {
     {  449, 1270, 0xfff7e6},
@@ -22,12 +24,15 @@ local buyButtonColors = {
 
 -- 师门任务做完对话框里
 local finishedColors = {
-    {  330,  109, 0x94867b},
-    {  343,  227, 0x949673},
-    {  343,  337, 0xc5b294},
-    {   30,  108, 0x847d6b},
-    {   16,  206, 0x948e7b},
-    {   16,  422, 0x948e73},
+    {  281,  110, 0xd6cebd},
+    {  260,  144, 0xbdbaa4},
+    {  288,  185, 0xd6cebd},
+    {  268,  241, 0xd6cebd},
+    {  288,  262, 0xc5c2ad},
+    {  288,  300, 0xd6d2bd},
+    {  288,  331, 0xded7c5},
+    {  285,  438, 0xc5baad},
+    {  275,  590, 0xcec6b5},
 }
 
 local enterMasterMapColors = {
@@ -108,6 +113,7 @@ end
 
 -- 直接调用
 if ... == nil then
+    startLog("dhxy")
     watchMasterTask(function()
         vibratorTimes()
     end)

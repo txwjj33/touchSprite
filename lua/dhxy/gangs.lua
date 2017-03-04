@@ -2,6 +2,8 @@
 --时间：2017.2.25
 --备注：
 
+require("dhxy.functions")
+
 -- 一个打五个的对话按钮
 local fightButtonColors = {
     {  449, 1270, 0xfff7e6},
@@ -22,15 +24,15 @@ local buyButtonColors = {
 
 -- 帮派任务做完对话框
 local finishedColors = {
-    {  246,   47, 0x4a3531},
-    {  244,   54, 0x5a4142},
-    {  244,   69, 0x523d3a},
-    {  211,   51, 0x735d5a},
-    {  209,   56, 0x7b6963},
-    {  213,   63, 0x4a2d31},
-    {  206,   47, 0xf7ebd6},
+    {  288,  117, 0xd6cabd},
+    {  288,  149, 0xd6cabd},
+    {  288,  193, 0xe6dbc5},
+    {  286,  219, 0xd6d2bd},
+    {  288,  254, 0xcecab5},
+    {  288,  289, 0xc5c2ad},
+    {  286,  359, 0xded2c5},
+    {  288,  400, 0xcecebd},
 }
-
 -- 进入帮派
 function enterGangs()
     local colors = {
@@ -101,6 +103,7 @@ end
 
 -- 直接调用
 if ... == nil then
+    startLog("dhxy")
     watchGangsTask(function()
         vibratorTimes()
     end)
