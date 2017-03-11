@@ -100,6 +100,12 @@ function click(param1, param2)
     end
 end
 
+function errorAndExit(msg)
+    if msg then loge(msg) end
+    vibratorTimes()
+    lua_exit()
+end
+
 -- 手机纵向坐标转变横向坐标
 function transToH(posx, posy)
     return posy, display.width - posx

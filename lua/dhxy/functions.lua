@@ -149,6 +149,14 @@ function checkMultiColor(colors, timeout)
     end
 end
 
+-- 输出目标点的颜色，用于测试checkMultiColor
+function debugMultiColor(colors)
+    for _, v in ipairs(colors) do
+        local color = getColor(v[1], v[2])
+        logd(string.format("color: 0x%06x, 0x%06x", color, v[3]))
+    end
+end
+
 -- 点击按钮，弹出某个对话框
 -- colors: 用于检测对话框是否真的弹出
 function showDialog(buttonPos, colors, timeout)
