@@ -34,6 +34,41 @@ local reconnectColors = {
     {  350,  662, 0xffe7a4},
 }
 
+-- 活动界面活跃度三个字的颜色
+local activityDialogColors = {
+    {  127,  229, 0xb5756b},
+    {  127,  242, 0xa4554a},
+    {  127,  265, 0x9c3d3a},
+    {  126,  282, 0x8c2019},
+    {  129,  314, 0xa44942},
+}
+
+local friendDialogColors = {
+    {  115,  269, 0xffebb5},
+    {  115,  278, 0xfff3d6},
+    {  115,  376, 0xad693a},
+    {  115,  394, 0xad7142},
+    {  107,  413, 0xa45d19},
+    {  100,  422, 0xffe7ad},
+}
+
+-- -- 第一个前往的按钮颜色
+-- local qianwangButtonColors = {
+--     {  777,  753, 0xc5e7ce},
+--     {  775,  797, 0xb5dfc5},
+--     {  749,  795, 0x42ba8c},
+--     {  725,  843, 0x5adfa4},
+-- }
+
+-- -- 右边的前往button的颜色，跟左边的不太一样
+-- local qianwangRightButtonColors = {
+--     {  753, 1433, 0x42ba84},
+--     {  776, 1446, 0xf7fbf7},
+--     {  779, 1475, 0x9cd7ad},
+--     {  783, 1524, 0x4ac294},
+--     {  723, 1528, 0x31caa4},
+-- }
+
 -- 启动大话西游
 function rundhxy()
     local time = os.time()
@@ -73,7 +108,7 @@ function initApp()
     startLog("dhxy")
     logi("script begin!")
     unlockPhone()
-    mSleep(50)
+    mSleep(4000)
     return rundhxy()
 end
 
@@ -155,6 +190,24 @@ function debugMultiColor(colors)
         local color = getColor(v[1], v[2])
         logd(string.format("color: 0x%06x, 0x%06x", color, v[3]))
     end
+end
+
+-- 输入文本，pos是输入框的位置
+function inputTextEx(pos, text)
+    -- 切换到TS输入法
+    switchTSInputMethod(true)
+
+    -- 点击输入框
+    click(pos)
+    mSleep(4000)
+
+    inputText(text)
+    mSleep(4000)
+    -- 点击确定按钮
+    click(945, 1734)
+    mSleep(4000)
+
+    switchTSInputMethod(false)
 end
 
 -- 点击按钮，弹出某个对话框
@@ -261,4 +314,90 @@ function toPosByWorldMap(worldPos, localPos)
         loge("toPosByWorldMap: local map not open")
         return false
     end
+end
+
+-- 进入活动界面，检查活动是否完成,返回true和false，如果未完成，则点击前往按钮
+-- colors: 相应活动的文字颜色，代替点阵寻找
+-- 因为同样的坐标，scroll以后会到不同的位置，不知道怎么做到的，所以这个方法不可行
+function checkActivityFinished(colors)
+    local xMargin, yMargin = 159, 698
+
+    if not showDialog(gActivityButtonPos, activityDialogColors) then
+        errorAndExit("enter activity dialog faield")
+        lua_exit()
+    end
+
+    local scrollCount = 0
+    while true do
+        -- 找到这个文字
+        if multiColor(colors) then
+            logd("find")
+            -- 未完成,点击前往
+            if multiColor(qianwangButtonColors) then
+                click(777,  753)
+                logd("not finish")
+                return false
+            else
+                -- 已完成
+                logd("finished")
+                return true
+            end
+        else
+            -- 没有找到，检查右边的那个任务
+            local rightColors = createNewColors(colors, 0, yMargin)
+            -- 右边找到了这个任务
+            if multiColor(rightColors) then
+                logd("find in right")
+                -- 右边的前往找到了，
+                if multiColor(qianwangRightButtonColors) then
+                    logd("not finish")
+                    click(777, 753 + yMargin)
+                    return false
+                else
+                    logd("finished")
+                    return true
+                end
+            else
+                logd("not find, scrolling")
+                scrollCount = scrollCount + 1
+                if scrollCount > 12 then
+                    -- 滚动多次还没找到，退出
+                    errorAndExit("not find avtivity text, exit!")
+                end
+                -- 右边也没有找到，开始翻页
+                moveTo(333, 917, 333 + xMargin, 917, 10)
+                mSleep(1000)
+                -- continue
+                -- break
+            end
+        end
+    end
+end
+
+-- 从大话精灵问道npc的坐标，自动寻路
+-- npc的名字，答案中的自动寻路的位置
+function getPosByDHJL(npc, position)
+    if not showDialog(gFriendButtonPos, friendDialogColors) then
+        loge("not show friend dialog")
+    end
+
+    -- 点击大话精灵
+    click(683, 505)
+    mSleep(2000)
+
+    inputTextEx(pos(137, 603), npc)
+
+    -- 点击旁边把选择结果去掉
+    -- click(513, 201)
+    -- mSleep(2000)
+
+    -- 点击npc的位置
+    click(position)
+    mSleep(1000)
+
+    -- 连续两次点击关闭
+    click(929, 1660)
+    mSleep(2000)
+    click(929, 1660)
+    mSleep(2000)
 end

@@ -31,6 +31,16 @@ local function initDisplay()
     display.top_bottom         = pos(display.cx, display.bottom)
 end
 
+-- 把x, y 坐标加上一个差值求得新的colors
+function createNewColors(colors, xMargin, yMargin)
+    local newColors = {}
+    for _, v in ipairs(colors) do
+        local data = {[1] = v[1] + xMargin, [2] = v[2] + yMargin, [3] = v[3]}
+        table.insert(newColors, data)
+    end
+    return newColors
+end
+
 -- 依次点击多个点
 function clickMultiPoint(points)
     for _, v in ipairs(points) do

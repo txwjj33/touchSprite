@@ -24,6 +24,17 @@ local selectButtonColors = {
 	{  399, 1008, 0x7b4531},
 }
 
+-- 活动面板上的文字颜色
+-- local avtivityTextColors = {
+-- 	{  753,  394, 0xad5552},
+-- 	{  736,  394, 0xbd7d73},
+-- 	{  736,  417, 0xa44d4a},
+-- 	{  736,  443, 0xbd7973},
+-- 	{  733,  470, 0x942d29},
+-- 	{  733,  521, 0x943531},
+-- 	{  733,  564, 0xce9a8c},
+-- }
+
 -- 选择题错了的对话框
 local selectWrongColors = {
 	{  284,  110, 0xcecab5},
@@ -53,6 +64,16 @@ local buyPetButtonColors = {
 	{  271, 1461, 0x8ccaa4},
 	{  252, 1178, 0xeff7f7},
 	{  210, 1488, 0x29c6a4},
+}
+
+-- 上交按钮
+local uploadButtonColors = {
+	{  267, 1055, 0x9cd7b5},
+	{  261, 1144, 0x8ccaa4},
+	{  237, 1252, 0x42b68c},
+	{  203, 1054, 0x29c6a4},
+	{  201, 1170, 0x29caad},
+	{  205, 1270, 0x31b694},
 }
 
 -- 选择题
@@ -154,6 +175,9 @@ function watchTaskChains(finishCallback)
     end)
     local selectEvent = createMultiColorEvent(selectButtonColors, nil, selectCallback)
     local buyPetEvent = createMultiColorEvent(buyPetColors, nil, buyPet)
+    local uploadEvent = createMultiColorEvent(uploadButtonColors, nil, function()
+        click(267, 1055)
+    end)
     -- local stopEvent = createMultiColorEvent(finishedColors, 6, function()
     --     logi("watchTaskChains: finished")
     --     -- 点击屏幕中央，让完成的对话框消失
@@ -163,7 +187,7 @@ function watchTaskChains(finishCallback)
     -- end)
 
     -- local events = {fightEvent, buyEvent, stopEvent}
-    local events = {fightEvent, selectEvent, buyPetEvent}
+    local events = {fightEvent, selectEvent, buyPetEvent, uploadEvent}
     while not finished do
         -- 匹配成功时，快速检查，没成功时检查比较慢，节约性能
         if checkAllEvents(events) then

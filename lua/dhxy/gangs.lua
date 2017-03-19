@@ -33,6 +33,16 @@ local finishedColors = {
     {  286,  359, 0xded2c5},
     {  288,  400, 0xcecebd},
 }
+
+-- local gangsTextColors = {
+--     {  759,  395, 0xa44d4a},
+--     {  761,  431, 0xad615a},
+--     {  761,  458, 0xd6a29c},
+--     {  762,  472, 0xbd867b},
+--     {  763,  507, 0xdebeb5},
+--     {  733,  513, 0xd6aa9c},
+-- }
+
 -- 进入帮派
 function enterGangs()
     local colors = {
