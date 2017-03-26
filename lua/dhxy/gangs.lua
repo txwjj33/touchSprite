@@ -45,40 +45,34 @@ local finishedColors = {
 
 -- 进入帮派
 function enterGangs()
-    local colors = {
-        {  138,  266, 0xceebde},
-        {  134,  481, 0xffefc5},
-        {  283, 1271, 0xf78e8c},
-        {  146, 1294, 0xefe3ce},
-    }
-    -- 打开帮派界面
-    if not showDialog(gGangsButtonPos, colors) then
-        loge("enterGangs: gGangsButtonPos failed")
-        return false
-    end
+    click(90, 1256)
+    sleep(2)
 
-    local gangsColors = {
-        { 1032,  210, 0x422d29},
-        { 1030,  210, 0xd6d2b5},
-        { 1028,  210, 0x735952},
-        { 1025,  210, 0xf7e7d6},
-        { 1023,  210, 0x846963},
-        { 1020,  210, 0xcec2ad},
-    }
     -- 点击回到帮派
     click(121, 351)
-    mSleep(2000)
-    if not checkMultiColor(gangsColors) then
-        loge("enterGangs: repalce scene failed")
-        return false
-    end
+    sleep(3)
 
-    -- 打开本地地图，寻路到帮派总管
-    if not toPosByLocalMap(732, 1336) then return false end
+    -- 打开本地地图
+    click(1000, 215)
+    sleep(3)
+    -- 点击帮派总管的位置
+    click(732, 1336)
+    sleep(1)
+    -- 关闭本地地图
+    click(968, 1565)
+    sleep(0.1)
 
-    mSleep(10 * 1000)
+    sleep(10)
     logi("enterGangs: success")
     return true
+    -- 帮派任务的回答里面的坐标导航不对，所以不能用以下方法
+    -- if not gotoPosByDHJL("帮派任务坐标", pos(431, 1105)) then
+    --     return false
+    -- end
+    -- mSleep(30 * 1000)
+    -- -- 点击帮派总管
+    -- click(display.center)
+    -- return true
 end
 
 -- 监视帮派任务

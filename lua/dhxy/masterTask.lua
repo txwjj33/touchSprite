@@ -47,42 +47,13 @@ local enterMasterMapColors = {
 
 -- 进入师门
 function enterMasterMap()
-    -- if not enterWorldMap() then return false end
-
-    -- -- 点击方寸山
-    -- click(669, 275)
-    -- mSleep(100)
-    -- if checkMultiColor(localMapColors) then
-    --     -- 本地地图已弹出，点击斜月三星洞的位置
-    --     -- 点一次进不去，走到附近以后再点一次
-    --     click(766, 629)
-    --     mSleep(15 * 1000)
-    --     click(763, 634)
-    --     mSleep(100)
-    --     -- 等待走到斜月三星洞，判断是否进入
-    --     if checkMultiColor(enterMasterMapColors) then
-    --         -- 点击菩提祖师的位置
-    --         click(619, 830)
-    --         mSleep(50)
-    --         if closeLocalMap() then
-    --             logi("enterMasterMap: sussess")
-    --             return true
-    --         else
-    --             loge("enterMasterMap: local map not close")
-    --             return false
-    --         end
-    --     else
-    --         loge("enterMasterMap: enter master map error")
-    --         return false
-    --     end
-    -- else
-    --     loge("enterMasterMap: local map not open")
-    --     return false
-    -- end
-    getPosByDHJL("菩提祖师坐标", pos(533, 745))
-    mSleep(60 * 1000)
+    if not gotoPosByDHJL("菩提祖师坐标", pos(533, 745)) then
+        return false
+    end
+    sleep(10)
     -- 点击菩提祖师
     click(display.center)
+    return true
 end
 
 -- 监视师门任务

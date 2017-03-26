@@ -4,12 +4,13 @@
 
 require("utils")
 
+gBid = "com.netease.dhxy.wdj"
+
 gStoreButtonPos = pos(1000, 456)
 gActivityButtonPos = pos(745, 70)
 gAwardButtonPos = pos(606, 70)
 gRankingButtonPos = pos(459, 70)
 gChatButtonPos = pos(259, 70)
-gGangsButtonPos = pos(90, 1256)
 gFriendButtonPos = pos(90, 1404)
 gTeamButtonPos = pos(90, 1551)
 gBagButtonPos = pos(90, 1693)

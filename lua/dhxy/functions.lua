@@ -67,36 +67,45 @@ local friendDialogColors = {
 --     {  779, 1475, 0x9cd7ad},
 --     {  783, 1524, 0x4ac294},
 --     {  723, 1528, 0x31caa4},
--- }
+-- } 
 
 -- 启动大话西游
 function rundhxy()
+    for i = 0, 10 do
+        local result = runApp(gBid)
+        mSleep(5 * 1000)
+        logi("rundhxy:run app" .. tostring(result))
+        local bid, class = frontAppBid()
+        if bid == gBid then
+            logi("rundhxy success")
+            return true
+        end
+    end
+    errorAndExit("rundhxy failed!")
+    return false
+end
+
+function enterdhxy()
     local time = os.time()
-    runApp("com.netease.dhxy.wdj")
-    logd("rundhxy:run app")
-    mSleep(10 * 1000)
     while true do
         if multiColor(mapButtonColors) then
-            logi("rundhxy:enter game")
+            logi("enterdhxy:enter game")
             -- 已进入界面
             return true
         elseif multiColor(startGameButtonColors) then
             -- 在开始游戏界面
-            logi("rundhxy:enter start game")
+            logi("enterdhxy:enter start game")
             click(176, 967)
             mSleep(10 * 1000)
         elseif multiColor(reconnectColors) then
             -- 连接网络界面
-            logi("rundhxy:enter connect scenes")
+            logi("enterdhxy:enter connect scenes")
             click(373, 1130)
             mSleep(10 * 1000)
         else
             if os.time() - time > 3 * 60 then
                 -- 3分钟还没进去，提示
-                loge("rundhxy:enter game timeout!!")
-                vibratorTimes(5)
-                dialog("rundhxy:enter game timeout!!")
-                lua_exit()
+                errorAndExit("enterdhxy:enter game timeout!!")
             else
                 mSleep(5 * 1000)
             end
@@ -109,7 +118,12 @@ function initApp()
     logi("script begin!")
     unlockPhone()
     mSleep(4000)
-    return rundhxy()
+    if rundhxy() then
+        mSleep(5 * 1000)
+        return enterdhxy()
+    else
+        return false
+    end
 end
 
 -- 创建多点颜色检测的事件
@@ -210,194 +224,195 @@ function inputTextEx(pos, text)
     switchTSInputMethod(false)
 end
 
--- 点击按钮，弹出某个对话框
--- colors: 用于检测对话框是否真的弹出
-function showDialog(buttonPos, colors, timeout)
-    click(buttonPos)
-    mSleep(100)
-    if colors then
-        return checkMultiColor(colors, timeout)
-    else
-        return true
-    end
-end
-
--- 打开世界地图
-function enterWorldMap()
-    if showDialog(pos(1000, 70), worldMapColors) then
-        logi("enterWorldMap success")
-        return true
-    else
-        loge("enterWorldMap failed")
-        return false
-    end
-end
-
--- 打开本地地图
-function enterLocalMap()
-    if showDialog(pos(1000, 215), localMapColors) then
-        logi("enterLocalMap success")
-        return true
-    else
-        loge("enterLocalMap failed")
-        return false
-    end
-end
-
--- 关闭世界地图
-function closeWorldMap()
-    if multiColor(worldMapColors) then
-        click(1031, 1871)
-        mSleep(100)
-        if checkMultiColor(worldMapColors) then
-            loge("closeWorldMap error")
-            return false
-        else
-            return true
-        end
-    else
-        return true
-    end
-end
-
--- 关闭本地地图
-function closeLocalMap()
-    if multiColor(localMapColors) then
-        click(968, 1565)
-        mSleep(100)
-        if checkMultiColor(localMapColors) then
-            loge("closeLocalMap error")
-            return false
-        else
-            return true
-        end
-    else
-        return true
-    end
-end
-
--- 进入本地地图，点击某个点，并关闭本地地图
-function toPosByLocalMap(x, y)
-    if not enterLocalMap() then return false end
-    click(x, y)
-    mSleep(50)
-    if closeLocalMap() then
-        return true
-    else
-        loge("toPosByLocalMap: local map not closed")
-        return false
-    end
-end
-
--- 进入世界地图，点击某个场景，再点击小地图寻路，最后关闭小地图
-function toPosByWorldMap(worldPos, localPos)
-    if not enterWorldMap() then return false end
-
-    click(worldPos)
-    mSleep(100)
-    if checkMultiColor(localMapColors) then
-        -- 本地地图已弹出
-        click(localPos)
-        mSleep(100)
-        if closeLocalMap() then
-            if closeWorldMap() then
-                return true
-            else
-                loge("toPosByWorldMap: world map not closed")
-                return false
-            end
-        else
-            loge("toPosByWorldMap: local map not closed")
-            return false
-        end
-    else
-        loge("toPosByWorldMap: local map not open")
-        return false
-    end
-end
-
--- 进入活动界面，检查活动是否完成,返回true和false，如果未完成，则点击前往按钮
--- colors: 相应活动的文字颜色，代替点阵寻找
--- 因为同样的坐标，scroll以后会到不同的位置，不知道怎么做到的，所以这个方法不可行
-function checkActivityFinished(colors)
-    local xMargin, yMargin = 159, 698
-
-    if not showDialog(gActivityButtonPos, activityDialogColors) then
-        errorAndExit("enter activity dialog faield")
-        lua_exit()
-    end
-
-    local scrollCount = 0
-    while true do
-        -- 找到这个文字
-        if multiColor(colors) then
-            logd("find")
-            -- 未完成,点击前往
-            if multiColor(qianwangButtonColors) then
-                click(777,  753)
-                logd("not finish")
-                return false
-            else
-                -- 已完成
-                logd("finished")
-                return true
-            end
-        else
-            -- 没有找到，检查右边的那个任务
-            local rightColors = createNewColors(colors, 0, yMargin)
-            -- 右边找到了这个任务
-            if multiColor(rightColors) then
-                logd("find in right")
-                -- 右边的前往找到了，
-                if multiColor(qianwangRightButtonColors) then
-                    logd("not finish")
-                    click(777, 753 + yMargin)
-                    return false
-                else
-                    logd("finished")
-                    return true
-                end
-            else
-                logd("not find, scrolling")
-                scrollCount = scrollCount + 1
-                if scrollCount > 12 then
-                    -- 滚动多次还没找到，退出
-                    errorAndExit("not find avtivity text, exit!")
-                end
-                -- 右边也没有找到，开始翻页
-                moveTo(333, 917, 333 + xMargin, 917, 10)
-                mSleep(1000)
-                -- continue
-                -- break
-            end
-        end
-    end
-end
-
 -- 从大话精灵问道npc的坐标，自动寻路
 -- npc的名字，答案中的自动寻路的位置
-function getPosByDHJL(npc, position)
-    if not showDialog(gFriendButtonPos, friendDialogColors) then
-        loge("not show friend dialog")
-    end
+function gotoPosByDHJL(npc, position)
+    click(90, 1404)
+    sleep(2)
 
     -- 点击大话精灵
     click(683, 505)
-    mSleep(2000)
+    sleep(2)
 
     inputTextEx(pos(137, 603), npc)
 
     -- 点击旁边把选择结果去掉
     -- click(513, 201)
-    -- mSleep(2000)
+    -- sleep(2)
 
     -- 点击npc的位置
     click(position)
-    mSleep(1000)
+    sleep(1)
 
     -- 连续两次点击关闭
     click(929, 1660)
-    mSleep(2000)
+    sleep(2)
     click(929, 1660)
-    mSleep(2000)
+    sleep(2)
+
+    return true
 end
+
+-- 点击按钮，弹出某个对话框
+-- colors: 用于检测对话框是否真的弹出
+-- function showDialog(buttonPos, colors, timeout)
+--     click(buttonPos)
+--     mSleep(100)
+--     if colors then
+--         return checkMultiColor(colors, timeout)
+--     else
+--         return true
+--     end
+-- end
+
+-- 打开世界地图
+-- function enterWorldMap()
+--     if showDialog(pos(1000, 70), worldMapColors) then
+--         logi("enterWorldMap success")
+--         return true
+--     else
+--         loge("enterWorldMap failed")
+--         return false
+--     end
+-- end
+
+-- -- 打开本地地图
+-- function enterLocalMap()
+--     if showDialog(pos(1000, 215), localMapColors) then
+--         logi("enterLocalMap success")
+--         return true
+--     else
+--         loge("enterLocalMap failed")
+--         return false
+--     end
+-- end
+
+-- -- 关闭世界地图
+-- function closeWorldMap()
+--     if multiColor(worldMapColors) then
+--         click(1031, 1871)
+--         mSleep(100)
+--         if checkMultiColor(worldMapColors) then
+--             loge("closeWorldMap error")
+--             return false
+--         else
+--             return true
+--         end
+--     else
+--         return true
+--     end
+-- end
+
+-- -- 关闭本地地图
+-- function closeLocalMap()
+--     if multiColor(localMapColors) then
+--         click(968, 1565)
+--         mSleep(100)
+--         if checkMultiColor(localMapColors) then
+--             loge("closeLocalMap error")
+--             return false
+--         else
+--             return true
+--         end
+--     else
+--         return true
+--     end
+-- end
+
+-- 进入本地地图，点击某个点，并关闭本地地图
+-- function toPosByLocalMap(x, y)
+--     if not enterLocalMap() then return false end
+--     click(x, y)
+--     mSleep(50)
+--     if closeLocalMap() then
+--         return true
+--     else
+--         loge("toPosByLocalMap: local map not closed")
+--         return false
+--     end
+-- end
+
+-- 进入世界地图，点击某个场景，再点击小地图寻路，最后关闭小地图
+-- function toPosByWorldMap(worldPos, localPos)
+--     if not enterWorldMap() then return false end
+
+--     click(worldPos)
+--     mSleep(100)
+--     if checkMultiColor(localMapColors) then
+--         -- 本地地图已弹出
+--         click(localPos)
+--         mSleep(100)
+--         if closeLocalMap() then
+--             if closeWorldMap() then
+--                 return true
+--             else
+--                 loge("toPosByWorldMap: world map not closed")
+--                 return false
+--             end
+--         else
+--             loge("toPosByWorldMap: local map not closed")
+--             return false
+--         end
+--     else
+--         loge("toPosByWorldMap: local map not open")
+--         return false
+--     end
+-- end
+
+-- 进入活动界面，检查活动是否完成,返回true和false，如果未完成，则点击前往按钮
+-- colors: 相应活动的文字颜色，代替点阵寻找
+-- 因为同样的坐标，scroll以后会到不同的位置，不知道怎么做到的，所以这个方法不可行
+-- function checkActivityFinished(colors)
+--     local xMargin, yMargin = 159, 698
+
+--     if not showDialog(gActivityButtonPos, activityDialogColors) then
+--         errorAndExit("enter activity dialog faield")
+--         lua_exit()
+--     end
+
+--     local scrollCount = 0
+--     while true do
+--         -- 找到这个文字
+--         if multiColor(colors) then
+--             logd("find")
+--             -- 未完成,点击前往
+--             if multiColor(qianwangButtonColors) then
+--                 click(777,  753)
+--                 logd("not finish")
+--                 return false
+--             else
+--                 -- 已完成
+--                 logd("finished")
+--                 return true
+--             end
+--         else
+--             -- 没有找到，检查右边的那个任务
+--             local rightColors = createNewColors(colors, 0, yMargin)
+--             -- 右边找到了这个任务
+--             if multiColor(rightColors) then
+--                 logd("find in right")
+--                 -- 右边的前往找到了，
+--                 if multiColor(qianwangRightButtonColors) then
+--                     logd("not finish")
+--                     click(777, 753 + yMargin)
+--                     return false
+--                 else
+--                     logd("finished")
+--                     return true
+--                 end
+--             else
+--                 logd("not find, scrolling")
+--                 scrollCount = scrollCount + 1
+--                 if scrollCount > 12 then
+--                     -- 滚动多次还没找到，退出
+--                     errorAndExit("not find avtivity text, exit!")
+--                 end
+--                 -- 右边也没有找到，开始翻页
+--                 moveTo(333, 917, 333 + xMargin, 917, 10)
+--                 mSleep(1000)
+--                 -- continue
+--                 -- break
+--             end
+--         end
+--     end
+-- end

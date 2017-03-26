@@ -113,6 +113,7 @@ end
 function errorAndExit(msg)
     if msg then loge(msg) end
     vibratorTimes()
+    dialog(msg)
     lua_exit()
 end
 
@@ -168,6 +169,11 @@ function clone(object)
         return setmetatable(newObject, getmetatable(object))
     end
     return _copy(object)
+end
+
+-- s为单位
+function sleep(time)
+    mSleep(time * 1000)
 end
 
 initDisplay()

@@ -8,6 +8,10 @@ require("dhxy.gangs")
 require("dhxy.masterTask")
 
 local function main()
+    -- 先关闭程序 免得大话精灵的回答坐标位置变化
+    closeApp(gBid)
+    mSleep(5 * 1000)
+
     if not initApp() then return end
 
     -- 开始帮派任务
@@ -17,12 +21,13 @@ local function main()
     if enterMasterMap() then watchMasterTask() end
 
     -- 开始五环任务
-    if toPosByWorldMap(pos(613, 1135), pos(416, 1176)) then
-        mSleep(5 * 1000)
-        click(304, 1606)
-    else
-        loge("start wuhuan error")
+    if not gotoPosByDHJL("五环任务坐标", pos(641, 1017)) then
+        return false
     end
+    sleep(10)
+    click(display.center)
+    sleep(2)
+    click(304, 1606)
 end
 
 main()
