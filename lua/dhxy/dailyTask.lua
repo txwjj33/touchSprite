@@ -21,13 +21,13 @@ local function main()
     if enterMasterMap() then watchMasterTask() end
 
     -- 开始五环任务
-    if not gotoPosByDHJL("五环任务坐标", pos(641, 1017)) then
+    if not gotoPosByDHJL("五环任务坐标", pos(1017, 439)) then
         return false
     end
     sleep(10)
     click(display.center)
     sleep(2)
-    click(304, 1606)
+    click(1606, 776)
 end
 
 -- 直接调用

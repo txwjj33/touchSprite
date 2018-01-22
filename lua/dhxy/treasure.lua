@@ -6,22 +6,22 @@ require("dhxy.functions")
 
 -- 使用按钮
 local useButtonColors = {
-    {  709, 1224, 0x94e3ce},
-    {  702, 1219, 0xffffff},
-    {  681, 1219, 0x52ba8c},
-    {  673, 1261, 0xffffff},
-    {  672, 1283, 0xffffff},
-    {  673, 1329, 0x42b68c},
+    {1224, 371, 0x94e3ce},
+    {1219, 378, 0xffffff},
+    {1219, 399, 0x52ba8c},
+    {1261, 407, 0xffffff},
+    {1283, 408, 0xffffff},
+    {1329, 407, 0x42b68c},
 }
 
 -- 挖下一个宝使用按钮2
 local digNextButtonColors = {
-    {  433, 1424, 0x9c8173},
-    {  419, 1458, 0xc5493a},
-    {  381, 1462, 0xf7f3bd},
-    {  279, 1466, 0x4aba94},
-    {  273, 1477, 0xe6f7ef},
-    {  277, 1518, 0x4aba94},
+    {1424, 647, 0x9c8173},
+    {1458, 661, 0xc5493a},
+    {1462, 699, 0xf7f3bd},
+    {1466, 801, 0x4aba94},
+    {1477, 807, 0xe6f7ef},
+    {1518, 803, 0x4aba94},
 }
 
 -- 监视宝图任务
@@ -30,10 +30,10 @@ function watchTreasuresTask(finishCallback)
     local count = 0
 
     local event1 = createMultiColorEvent(useButtonColors, nil, function()
-        click(709, 1224)
+        click(1224, 371)
     end)
     local event2 = createMultiColorEvent(digNextButtonColors, nil, function()
-        click(279, 1466)
+        click(1466, 801)
     end)
 
     local events = {event1, event2}
@@ -51,7 +51,7 @@ function watchTreasuresTask(finishCallback)
 end
 
 function main()
-    Log.start("dhxy")
+    if not initApp() then return end
     watchTreasuresTask(function()
         vibratorTimes()
     end)

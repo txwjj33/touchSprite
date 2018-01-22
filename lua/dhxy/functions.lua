@@ -7,49 +7,51 @@ require("dhxy.constants")
 
 -- 主界面左上角的图标
 local mapButtonColors = {
-    { 1054,   38, 0xefc26b},
-    { 1048,   38, 0xde415a},
-    { 1039,   38, 0xb58142},
-    { 1027,   38, 0x6bf3f7},
-    { 1016,   38, 0xf7f3a4},
-    { 1005,   38, 0xadf3de},
-    {  989,   38, 0xf7f3ef},
+    {38, 26, 0xefc26b},
+    {38, 32, 0xde415a},
+    {38, 41, 0xb58142},
+    {38, 53, 0x6bf3f7},
+    {38, 64, 0xf7f3a4},
+    {38, 75, 0xadf3de},
+    {38, 91, 0xf7f3ef},
 }
+
 -- 开始界面的按钮
 local startGameButtonColors = {
-    {  232,  829, 0x3acea4},
-    {  220,  829, 0xf7efd6},
-    {  187,  882, 0xffffff},
-    {  225, 1132, 0xefdbc5},
-    {  152, 1154, 0x31cea4},
-    {  162, 1106, 0x63ba94},
+    {829, 848, 0x3acea4},
+    {829, 860, 0xf7efd6},
+    {882, 893, 0xffffff},
+    {1132, 855, 0xefdbc5},
+    {1154, 928, 0x31cea4},
+    {1106, 918, 0x63ba94},
 }
+
 -- 连接网络的按钮
 local reconnectColors = {
-    {  408, 1264, 0xb5dfbd},
-    {  385, 1189, 0xeff7ef},
-    {  350, 1047, 0x3abe94},
-    {  394,  870, 0xfff3d6},
-    {  384,  798, 0x9c5919},
-    {  350,  662, 0xffe7a4},
+    {1264, 672, 0xb5dfbd},
+    {1189, 695, 0xeff7ef},
+    {1047, 730, 0x3abe94},
+    {870, 686, 0xfff3d6},
+    {798, 696, 0x9c5919},
+    {662, 730, 0xffe7a4},
 }
 
 -- 活动界面活跃度三个字的颜色
 local activityDialogColors = {
-    {  127,  229, 0xb5756b},
-    {  127,  242, 0xa4554a},
-    {  127,  265, 0x9c3d3a},
-    {  126,  282, 0x8c2019},
-    {  129,  314, 0xa44942},
+    {229, 953, 0xb5756b},
+    {242, 953, 0xa4554a},
+    {265, 953, 0x9c3d3a},
+    {282, 954, 0x8c2019},
+    {314, 951, 0xa44942},
 }
 
 local friendDialogColors = {
-    {  115,  269, 0xffebb5},
-    {  115,  278, 0xfff3d6},
-    {  115,  376, 0xad693a},
-    {  115,  394, 0xad7142},
-    {  107,  413, 0xa45d19},
-    {  100,  422, 0xffe7ad},
+    {269, 965, 0xffebb5},
+    {278, 965, 0xfff3d6},
+    {376, 965, 0xad693a},
+    {394, 965, 0xad7142},
+    {413, 973, 0xa45d19},
+    {422, 980, 0xffe7ad},
 }
 
 -- -- 第一个前往的按钮颜色
@@ -69,20 +71,28 @@ local friendDialogColors = {
 --     {  723, 1528, 0x31caa4},
 -- }
 
--- 启动大话西游
+-- 启动大话西游，如果30s后还没到前台，就退出
 function rundhxy()
-    for i = 0, 10 do
-        local result = runApp(gBid)
-        mSleep(5 * 1000)
-        Log.i("rundhxy:run app" .. tostring(result))
-        local bid, class = frontAppBid()
-        if bid == gBid then
-            Log.i("rundhxy success")
-            return true
+    local bid = "com.netease.dhxy.wdj"
+    if isFrontApp(bid) == 0 then
+        local result = runApp(bid)
+        if result ~= 0 then
+            errorAndExit("rundhxy failed: run app failed(%d)", result)
         end
+        mSleep(5 * 1000)
+        local count = 0
+        while isFrontApp(bid) == 0 do
+            count = count + 1
+            if count >= 5 then
+                errorAndExit("rundhxy failed!")
+            end
+            mSleep(5 * 1000)
+        end
+        Log.i("rundhxy success!")
+    else
+        Log.i("rundhxy success: already in front")
+        return true
     end
-    errorAndExit("rundhxy failed!")
-    return false
 end
 
 function enterdhxy()
@@ -95,12 +105,12 @@ function enterdhxy()
         elseif multiColor(startGameButtonColors) then
             -- 在开始游戏界面
             Log.i("enterdhxy:enter start game")
-            click(176, 967)
+            click(967, 904)
             mSleep(10 * 1000)
         elseif multiColor(reconnectColors) then
             -- 连接网络界面
             Log.i("enterdhxy:enter connect scenes")
-            click(373, 1130)
+            click(1130, 707)
             mSleep(10 * 1000)
         else
             if os.time() - time > 3 * 60 then
@@ -117,9 +127,8 @@ function initApp()
     Log.start("dhxy")
     Log.i("script begin!")
     unlockPhone()
-    mSleep(4000)
+    init(1)
     if rundhxy() then
-        mSleep(5 * 1000)
         return enterdhxy()
     else
         return false

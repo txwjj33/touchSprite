@@ -88,6 +88,7 @@ function unlockPhone()
     -- 输入密码
     local t = {pos(251, 1057), pos(251, 1057), pos(544, 1057), pos(838, 1057)}
     clickMultiPoint(t)
+    mSleep(4000)
 end
 
 function pos(x, y)

@@ -6,22 +6,22 @@ require("dhxy.functions")
 
 -- 一个打五个的对话按钮
 local fightButtonColors = {
-    {  449, 1270, 0xfff7e6},
-    {  408, 1270, 0xffe3a4},
-    {  383, 1270, 0xf7dba4},
-    {  383, 1755, 0xf7dba4},
-    {  419, 1755, 0xffe7ad},
-    {  447, 1755, 0xfff7de},
+    {1270, 631, 0xfff7e6},
+    {1270, 672, 0xffe3a4},
+    {1270, 697, 0xf7dba4},
+    {1755, 697, 0xf7dba4},
+    {1755, 661, 0xffe7ad},
+    {1755, 633, 0xfff7de},
 }
 
 -- 回答问题的第二个按钮
 local selectButtonColors = {
-    {  441,  999, 0xfff7e6},
-    {  445, 1035, 0xfffbe6},
-    {  361,  995, 0xf7dfa4},
-    {  351,  995, 0xd6a252},
-    {  395, 1002, 0xf7aa63},
-    {  399, 1008, 0x7b4531},
+    {999, 639, 0xfff7e6},
+    {1035, 635, 0xfffbe6},
+    {995, 719, 0xf7dfa4},
+    {995, 729, 0xd6a252},
+    {1002, 685, 0xf7aa63},
+    {1008, 681, 0x7b4531},
 }
 
 -- 活动面板上的文字颜色
@@ -37,49 +37,49 @@ local selectButtonColors = {
 
 -- 选择题错了的对话框
 local selectWrongColors = {
-    {  284,  110, 0xcecab5},
-    {  287,  110, 0x292421},
-    {  285,  116, 0xe6e3ce},
-    {  276,  117, 0xefebd6},
-    {  275,  131, 0xdedfc5},
-    {  275,  170, 0xded7c5},
-    {  269,  143, 0xd6cebd},
+    {110, 796, 0xcecab5},
+    {110, 793, 0x292421},
+    {116, 795, 0xe6e3ce},
+    {117, 804, 0xefebd6},
+    {131, 805, 0xdedfc5},
+    {170, 805, 0xded7c5},
+    {143, 811, 0xd6cebd},
 }
 
 -- 购买宠物的前往捕捉按钮
 local buyPetColors = {
-    {  868, 1384, 0xfffbe6},
-    {  854, 1395, 0xce9e6b},
-    {  852, 1418, 0xa46529},
-    {  830, 1471, 0xa45d21},
-    {  829, 1568, 0xa45d19},
-    {  838, 1577, 0xffebb5},
+    {1384, 212, 0xfffbe6},
+    {1395, 226, 0xce9e6b},
+    {1418, 228, 0xa46529},
+    {1471, 250, 0xa45d21},
+    {1568, 251, 0xa45d19},
+    {1577, 242, 0xffebb5},
 }
 
 -- 购买宠物的购买按钮
 local buyPetButtonColors = {
-    {  250, 1121, 0xd6efe6},
-    {  266, 1147, 0x7bc69c},
-    {  238, 1217, 0xa4bece},
-    {  271, 1461, 0x8ccaa4},
-    {  252, 1178, 0xeff7f7},
-    {  210, 1488, 0x29c6a4},
+    {1121, 830, 0xd6efe6},
+    {1147, 814, 0x7bc69c},
+    {1217, 842, 0xa4bece},
+    {1461, 809, 0x8ccaa4},
+    {1178, 828, 0xeff7f7},
+    {1488, 870, 0x29c6a4},
 }
 
 -- 上交按钮
 local uploadButtonColors = {
-    {  267, 1055, 0x9cd7b5},
-    {  261, 1144, 0x8ccaa4},
-    {  237, 1252, 0x42b68c},
-    {  203, 1054, 0x29c6a4},
-    {  201, 1170, 0x29caad},
-    {  205, 1270, 0x31b694},
+    {1055, 813, 0x9cd7b5},
+    {1144, 819, 0x8ccaa4},
+    {1252, 843, 0x42b68c},
+    {1054, 877, 0x29c6a4},
+    {1170, 879, 0x29caad},
+    {1270, 875, 0x31b694},
 }
 
 -- 选择题
 local function selectCallback()
     Log.i("selectCallback: start")
-    click(416, 993)
+    click(993, 664)
     mSleep(500)
     local count = 0
     while checkMultiColor(selectWrongColors) do
@@ -93,11 +93,11 @@ local function selectCallback()
         click(display.center)
         mSleep(500)
         -- 答错了，继续,点击200环任务
-        click(764, 1647)
+        click(1647, 316)
         mSleep(1000)
         if checkMultiColor(selectButtonColors) then
             -- 选择题弹出来了
-            click(416, 993)
+            click(993, 664)
             mSleep(500)
         else
             -- 选择题没弹出来
@@ -112,30 +112,30 @@ end
 
 local function buyPet()
     Log.i("buyPet: start")
-    -- 横屏状态下最后一个需求标记的坐标
+    -- 最后一个需求标记的坐标
     local taskSignColors = {
-        {  236, 1185, 0xffe394},
-        {  248, 1203, 0xffefad},
-        {  238, 1212, 0xf7d27b},
-        {  234, 1249, 0xffca8c},
-        {  230, 1261, 0xffba8c},
-        {  221, 1274, 0xffc2a4},
+        {1185, 844, 0xffe394},
+        {1203, 832, 0xffefad},
+        {1212, 842, 0xf7d27b},
+        {1249, 846, 0xffca8c},
+        {1261, 850, 0xffba8c},
+        {1274, 859, 0xffc2a4},
     }
     -- 当前页寻找满足条件的宠物
     local function findPet()
-        local width, height = 156, 475
+        local width, height = 475, 156
         for i = 0, 7 do
             local colors = clone(taskSignColors)
             for _, v in ipairs(colors) do
-                v[1] = v[1] + width * (i % 4)
-                v[2] = v[2] - math.floor(i / 4)
+                v[1] = v[1] - width * math.floor(i / 4)
+                v[2] = v[2] + height * (i % 4)
             end
             if multiColor(colors) then
                 -- 找到需求的标记，点击购买
-                click(colors[1][1], colors[1][2] + 200)
+                click(colors[1][1] + 200, colors[1][2])
                 mSleep(1000)
                 if checkMultiColor(buyPetButtonColors) then
-                    click(239, 1294)
+                    click(1294, 841)
                     mSleep(500)
                     return true
                 else
@@ -155,7 +155,7 @@ local function buyPet()
             return true
         else
             -- 这一页没有满足需求的，翻页
-            click(117, 1587)
+            click(1587, 963)
             mSleep(500)
             count = count + 1
         end
@@ -171,12 +171,12 @@ function watchTaskChains(finishCallback)
     local finished = false
 
     local fightEvent = createMultiColorEvent(fightButtonColors, nil, function()
-        click(408, 1500)
+        click(1500, 672)
     end)
     local selectEvent = createMultiColorEvent(selectButtonColors, nil, selectCallback)
     local buyPetEvent = createMultiColorEvent(buyPetColors, nil, buyPet)
     local uploadEvent = createMultiColorEvent(uploadButtonColors, nil, function()
-        click(267, 1055)
+        click(1055, 813)
     end)
     -- local stopEvent = createMultiColorEvent(finishedColors, 6, function()
     --     Log.i("watchTaskChains: finished")
@@ -199,7 +199,7 @@ function watchTaskChains(finishCallback)
 end
 
 function main()
-    Log.start("dhxy")
+    if not initApp() then return end
     watchTaskChains(function()
         vibratorTimes()
     end)

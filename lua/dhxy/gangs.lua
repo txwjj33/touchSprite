@@ -6,32 +6,32 @@ require("dhxy.functions")
 
 -- 一个打五个的对话按钮
 local fightButtonColors = {
-    {  449, 1270, 0xfff7e6},
-    {  408, 1270, 0xffe3a4},
-    {  383, 1270, 0xf7dba4},
-    {  383, 1755, 0xf7dba4},
-    {  419, 1755, 0xffe7ad},
-    {  447, 1755, 0xfff7de},
+    {1270, 631, 0xfff7e6},
+    {1270, 672, 0xffe3a4},
+    {1270, 697, 0xf7dba4},
+    {1755, 697, 0xf7dba4},
+    {1755, 661, 0xffe7ad},
+    {1755, 633, 0xfff7de},
 }
 
 -- 购买按钮
 local buyButtonColors = {
-    {  220, 1243, 0xffffff},
-    {  148, 1243, 0x31c6a4},
-    {  161, 1558, 0x31ba94},
-    {  225, 1553, 0x9cdbbd},
+    {1243, 860, 0xffffff},
+    {1243, 932, 0x31c6a4},
+    {1558, 919, 0x31ba94},
+    {1553, 855, 0x9cdbbd},
 }
 
 -- 帮派任务做完对话框
 local finishedColors = {
-    {  288,  117, 0xd6cabd},
-    {  288,  149, 0xd6cabd},
-    {  288,  193, 0xe6dbc5},
-    {  286,  219, 0xd6d2bd},
-    {  288,  254, 0xcecab5},
-    {  288,  289, 0xc5c2ad},
-    {  286,  359, 0xded2c5},
-    {  288,  400, 0xcecebd},
+    {117, 792, 0xd6cabd},
+    {149, 792, 0xd6cabd},
+    {193, 792, 0xe6dbc5},
+    {219, 794, 0xd6d2bd},
+    {254, 792, 0xcecab5},
+    {289, 792, 0xc5c2ad},
+    {359, 794, 0xded2c5},
+    {400, 792, 0xcecebd},
 }
 
 -- local gangsTextColors = {
@@ -45,21 +45,21 @@ local finishedColors = {
 
 -- 进入帮派
 function enterGangs()
-    click(90, 1256)
+    click(1256, 990)
     sleep(2)
 
     -- 点击回到帮派
-    click(121, 351)
+    click(351, 959)
     sleep(3)
 
     -- 打开本地地图
-    click(1000, 215)
+    click(215, 80)
     sleep(3)
     -- 点击帮派总管的位置
-    click(732, 1336)
+    click(1336, 348)
     sleep(1)
     -- 关闭本地地图
-    click(968, 1565)
+    click(1565, 112)
     sleep(0.1)
 
     sleep(10)
@@ -81,10 +81,10 @@ function watchGangsTask(finishCallback)
     local finished = false
 
     local fightEvent = createMultiColorEvent(fightButtonColors, nil, function()
-        click(408, 1500)
+        click(1500, 672)
     end)
     local buyEvent = createMultiColorEvent(buyButtonColors, nil, function()
-        click(188, 1429)
+        click(1429, 892)
     end)
     local stopEvent = createMultiColorEvent(finishedColors, 6, function()
         Log.i("watchGangsTask: finished")
@@ -106,7 +106,7 @@ function watchGangsTask(finishCallback)
 end
 
 function main()
-    Log.start("dhxy")
+    if not initApp() then return end
     watchGangsTask(function()
         vibratorTimes()
     end)
