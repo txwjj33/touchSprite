@@ -67,17 +67,17 @@ local friendDialogColors = {
 --     {  779, 1475, 0x9cd7ad},
 --     {  783, 1524, 0x4ac294},
 --     {  723, 1528, 0x31caa4},
--- } 
+-- }
 
 -- 启动大话西游
 function rundhxy()
     for i = 0, 10 do
         local result = runApp(gBid)
         mSleep(5 * 1000)
-        logi("rundhxy:run app" .. tostring(result))
+        Log.i("rundhxy:run app" .. tostring(result))
         local bid, class = frontAppBid()
         if bid == gBid then
-            logi("rundhxy success")
+            Log.i("rundhxy success")
             return true
         end
     end
@@ -89,17 +89,17 @@ function enterdhxy()
     local time = os.time()
     while true do
         if multiColor(mapButtonColors) then
-            logi("enterdhxy:enter game")
+            Log.i("enterdhxy:enter game")
             -- 已进入界面
             return true
         elseif multiColor(startGameButtonColors) then
             -- 在开始游戏界面
-            logi("enterdhxy:enter start game")
+            Log.i("enterdhxy:enter start game")
             click(176, 967)
             mSleep(10 * 1000)
         elseif multiColor(reconnectColors) then
             -- 连接网络界面
-            logi("enterdhxy:enter connect scenes")
+            Log.i("enterdhxy:enter connect scenes")
             click(373, 1130)
             mSleep(10 * 1000)
         else
@@ -114,8 +114,8 @@ function enterdhxy()
 end
 
 function initApp()
-    startLog("dhxy")
-    logi("script begin!")
+    Log.start("dhxy")
+    Log.i("script begin!")
     unlockPhone()
     mSleep(4000)
     if rundhxy() then
@@ -202,7 +202,7 @@ end
 function debugMultiColor(colors)
     for _, v in ipairs(colors) do
         local color = getColor(v[1], v[2])
-        logd(string.format("color: 0x%06x, 0x%06x", color, v[3]))
+        Log.d(string.format("color: 0x%06x, 0x%06x", color, v[3]))
     end
 end
 
@@ -268,10 +268,10 @@ end
 -- 打开世界地图
 -- function enterWorldMap()
 --     if showDialog(pos(1000, 70), worldMapColors) then
---         logi("enterWorldMap success")
+--         Log.i("enterWorldMap success")
 --         return true
 --     else
---         loge("enterWorldMap failed")
+--         Log.e("enterWorldMap failed")
 --         return false
 --     end
 -- end
@@ -279,10 +279,10 @@ end
 -- -- 打开本地地图
 -- function enterLocalMap()
 --     if showDialog(pos(1000, 215), localMapColors) then
---         logi("enterLocalMap success")
+--         Log.i("enterLocalMap success")
 --         return true
 --     else
---         loge("enterLocalMap failed")
+--         Log.e("enterLocalMap failed")
 --         return false
 --     end
 -- end
@@ -293,7 +293,7 @@ end
 --         click(1031, 1871)
 --         mSleep(100)
 --         if checkMultiColor(worldMapColors) then
---             loge("closeWorldMap error")
+--             Log.e("closeWorldMap error")
 --             return false
 --         else
 --             return true
@@ -309,7 +309,7 @@ end
 --         click(968, 1565)
 --         mSleep(100)
 --         if checkMultiColor(localMapColors) then
---             loge("closeLocalMap error")
+--             Log.e("closeLocalMap error")
 --             return false
 --         else
 --             return true
@@ -327,7 +327,7 @@ end
 --     if closeLocalMap() then
 --         return true
 --     else
---         loge("toPosByLocalMap: local map not closed")
+--         Log.e("toPosByLocalMap: local map not closed")
 --         return false
 --     end
 -- end
@@ -346,15 +346,15 @@ end
 --             if closeWorldMap() then
 --                 return true
 --             else
---                 loge("toPosByWorldMap: world map not closed")
+--                 Log.e("toPosByWorldMap: world map not closed")
 --                 return false
 --             end
 --         else
---             loge("toPosByWorldMap: local map not closed")
+--             Log.e("toPosByWorldMap: local map not closed")
 --             return false
 --         end
 --     else
---         loge("toPosByWorldMap: local map not open")
+--         Log.e("toPosByWorldMap: local map not open")
 --         return false
 --     end
 -- end
@@ -374,15 +374,15 @@ end
 --     while true do
 --         -- 找到这个文字
 --         if multiColor(colors) then
---             logd("find")
+--             Log.d("find")
 --             -- 未完成,点击前往
 --             if multiColor(qianwangButtonColors) then
 --                 click(777,  753)
---                 logd("not finish")
+--                 Log.d("not finish")
 --                 return false
 --             else
 --                 -- 已完成
---                 logd("finished")
+--                 Log.d("finished")
 --                 return true
 --             end
 --         else
@@ -390,18 +390,18 @@ end
 --             local rightColors = createNewColors(colors, 0, yMargin)
 --             -- 右边找到了这个任务
 --             if multiColor(rightColors) then
---                 logd("find in right")
+--                 Log.d("find in right")
 --                 -- 右边的前往找到了，
 --                 if multiColor(qianwangRightButtonColors) then
---                     logd("not finish")
+--                     Log.d("not finish")
 --                     click(777, 753 + yMargin)
 --                     return false
 --                 else
---                     logd("finished")
+--                     Log.d("finished")
 --                     return true
 --                 end
 --             else
---                 logd("not find, scrolling")
+--                 Log.d("not find, scrolling")
 --                 scrollCount = scrollCount + 1
 --                 if scrollCount > 12 then
 --                     -- 滚动多次还没找到，退出

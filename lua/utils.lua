@@ -1,10 +1,25 @@
---作用：各项目通用的函数
---时间：2017.2.25
---备注：
+--[[
+作用: 各项目通用的函数
+时间: 2017.2.25
+备注:
+]]
+
+require("log")
+require("mathEx")
+require("luaEx")
 require("TSLib")
+
+DEBUG = false
 
 display = {}
 
+-- 默认手机处于纵向状态，屏幕的左上角是（0,0），往右+x, 往下+y
+-- width是1080，height是1920
+-- init(rotate,bid)，设置屏幕方向
+-- rotate: 必填，屏幕方向，0-竖屏，1-home键在右边，2-home键在左边
+-- bid: 选填，目标程序的Bundle ID，填写"0"时自动使用当前运行的应用
+-- 调用init不会影响display的width和height，
+-- 所有屏幕方向下都是左上角为原点，所以init(1)是x最大值是1920
 local function initDisplay()
     local width, height = getScreenSize()
     display.size               = {width = width, height = height}
@@ -52,9 +67,9 @@ end
 -- 多次震动，默认四次
 function vibratorTimes(times)
     times = times or 4
-    for i = 0, times do
+    for i = 1, times do
+        if i > 1 then mSleep(1000) end
         vibrator()
-        mSleep(1000)
     end
 end
 
@@ -62,7 +77,7 @@ end
 function unlockPhone()
     if deviceIsLock() == 0 then return end
 
-    logi("start unlock")
+    Log.i("start unlock")
     mSleep(1000)
     unlockDevice()
     mSleep(1000)
@@ -73,27 +88,6 @@ function unlockPhone()
     -- 输入密码
     local t = {pos(251, 1057), pos(251, 1057), pos(544, 1057), pos(838, 1057)}
     clickMultiPoint(t)
-end
-
--- 开始log记录
-function startLog(appName)
-    if not appName then
-        dialog("startLog need appName")
-        lua_exit()
-    end
-    logName = appName .. os.date("_%Y_%m_%d-%H_%M_%S")
-end
-
-function logd(msg)
-    log(string.format("[D]%s", msg), logName)
-end
-
-function logi(msg)
-    log(string.format("[I]%s", msg), logName)
-end
-
-function loge(msg)
-    log(string.format("[E]%s", msg), logName)
 end
 
 function pos(x, y)
@@ -111,9 +105,8 @@ function click(param1, param2)
 end
 
 function errorAndExit(msg)
-    if msg then loge(msg) end
+    if msg then Log.e(msg) end
     vibratorTimes()
-    dialog(msg)
     lua_exit()
 end
 
@@ -174,6 +167,32 @@ end
 -- s为单位
 function sleep(time)
     mSleep(time * 1000)
+end
+
+-- init的参数
+function snapshotEx(fileName, initParam)
+    initParam = initParam or 0
+    local snapshotName = string.format("/sdcard/TouchSprite/log/%s.png", fileName)
+    if initParam == 0 then
+        snapshot(snapshotName, 0, 0, display.width - 1, display.height - 1)
+    else
+        snapshot(snapshotName, 0, 0, display.height - 1, display.width - 1)
+    end
+end
+
+function xpcallCustom(functionName)
+    local function traceback(errorMessage)
+        Log.i(errorMessage)
+        -- 主动结束脚本
+        if string.find(errorMessage, "User Exit") then return end
+
+        Log.i("-----------------------------------------------------------------------")
+        debug.tracebackex()
+        Log.i("-----------------------------------------------------------------------")
+        vibratorTimes()
+        -- 这里系统会自动结束，因此不需要手动调用lua_exit
+    end
+    xpcall(functionName, traceback)
 end
 
 initDisplay()

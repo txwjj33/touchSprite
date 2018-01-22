@@ -30,4 +30,7 @@ local function main()
     click(304, 1606)
 end
 
-main()
+-- 直接调用
+if ... == nil then
+    xpcallCustom(main)
+end

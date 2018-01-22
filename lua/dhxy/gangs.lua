@@ -63,7 +63,7 @@ function enterGangs()
     sleep(0.1)
 
     sleep(10)
-    logi("enterGangs: success")
+    Log.i("enterGangs: success")
     return true
     -- 帮派任务的回答里面的坐标导航不对，所以不能用以下方法
     -- if not gotoPosByDHJL("帮派任务坐标", pos(431, 1105)) then
@@ -77,7 +77,7 @@ end
 
 -- 监视帮派任务
 function watchGangsTask(finishCallback)
-    logi("watchGangsTask: start")
+    Log.i("watchGangsTask: start")
     local finished = false
 
     local fightEvent = createMultiColorEvent(fightButtonColors, nil, function()
@@ -87,7 +87,7 @@ function watchGangsTask(finishCallback)
         click(188, 1429)
     end)
     local stopEvent = createMultiColorEvent(finishedColors, 6, function()
-        logi("watchGangsTask: finished")
+        Log.i("watchGangsTask: finished")
         -- 点击屏幕中央，让完成的对话框消失
         click(display.center)
         finished = true
@@ -105,10 +105,14 @@ function watchGangsTask(finishCallback)
     end
 end
 
--- 直接调用
-if ... == nil then
-    startLog("dhxy")
+function main()
+    Log.start("dhxy")
     watchGangsTask(function()
         vibratorTimes()
     end)
+end
+
+-- 直接调用
+if ... == nil then
+    xpcallCustom(main)
 end

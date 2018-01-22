@@ -58,7 +58,7 @@ end
 
 -- 监视师门任务
 function watchMasterTask(finishCallback)
-    logi("watchMasterTask: start")
+    Log.i("watchMasterTask: start")
     local finished = false
 
     local fightEvent = createMultiColorEvent(fightButtonColors, nil, function()
@@ -68,7 +68,7 @@ function watchMasterTask(finishCallback)
         click(188, 1429)
     end)
     local stopEvent = createMultiColorEvent(finishedColors, 6, function()
-        logi("watchMasterTask: finished")
+        Log.i("watchMasterTask: finished")
         -- 点击屏幕中央，让完成的对话框消失
         click(display.center)
         finished = true
@@ -86,10 +86,14 @@ function watchMasterTask(finishCallback)
     end
 end
 
--- 直接调用
-if ... == nil then
-    startLog("dhxy")
+function main()
+    Log.start("dhxy")
     watchMasterTask(function()
         vibratorTimes()
     end)
+end
+
+-- 直接调用
+if ... == nil then
+    xpcallCustom(main)
 end

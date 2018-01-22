@@ -16,158 +16,158 @@ local fightButtonColors = {
 
 -- 回答问题的第二个按钮
 local selectButtonColors = {
-	{  441,  999, 0xfff7e6},
-	{  445, 1035, 0xfffbe6},
-	{  361,  995, 0xf7dfa4},
-	{  351,  995, 0xd6a252},
-	{  395, 1002, 0xf7aa63},
-	{  399, 1008, 0x7b4531},
+    {  441,  999, 0xfff7e6},
+    {  445, 1035, 0xfffbe6},
+    {  361,  995, 0xf7dfa4},
+    {  351,  995, 0xd6a252},
+    {  395, 1002, 0xf7aa63},
+    {  399, 1008, 0x7b4531},
 }
 
 -- 活动面板上的文字颜色
 -- local avtivityTextColors = {
--- 	{  753,  394, 0xad5552},
--- 	{  736,  394, 0xbd7d73},
--- 	{  736,  417, 0xa44d4a},
--- 	{  736,  443, 0xbd7973},
--- 	{  733,  470, 0x942d29},
--- 	{  733,  521, 0x943531},
--- 	{  733,  564, 0xce9a8c},
+--  {  753,  394, 0xad5552},
+--  {  736,  394, 0xbd7d73},
+--  {  736,  417, 0xa44d4a},
+--  {  736,  443, 0xbd7973},
+--  {  733,  470, 0x942d29},
+--  {  733,  521, 0x943531},
+--  {  733,  564, 0xce9a8c},
 -- }
 
 -- 选择题错了的对话框
 local selectWrongColors = {
-	{  284,  110, 0xcecab5},
-	{  287,  110, 0x292421},
-	{  285,  116, 0xe6e3ce},
-	{  276,  117, 0xefebd6},
-	{  275,  131, 0xdedfc5},
-	{  275,  170, 0xded7c5},
-	{  269,  143, 0xd6cebd},
+    {  284,  110, 0xcecab5},
+    {  287,  110, 0x292421},
+    {  285,  116, 0xe6e3ce},
+    {  276,  117, 0xefebd6},
+    {  275,  131, 0xdedfc5},
+    {  275,  170, 0xded7c5},
+    {  269,  143, 0xd6cebd},
 }
 
 -- 购买宠物的前往捕捉按钮
 local buyPetColors = {
-	{  868, 1384, 0xfffbe6},
-	{  854, 1395, 0xce9e6b},
-	{  852, 1418, 0xa46529},
-	{  830, 1471, 0xa45d21},
-	{  829, 1568, 0xa45d19},
-	{  838, 1577, 0xffebb5},
+    {  868, 1384, 0xfffbe6},
+    {  854, 1395, 0xce9e6b},
+    {  852, 1418, 0xa46529},
+    {  830, 1471, 0xa45d21},
+    {  829, 1568, 0xa45d19},
+    {  838, 1577, 0xffebb5},
 }
 
 -- 购买宠物的购买按钮
 local buyPetButtonColors = {
-	{  250, 1121, 0xd6efe6},
-	{  266, 1147, 0x7bc69c},
-	{  238, 1217, 0xa4bece},
-	{  271, 1461, 0x8ccaa4},
-	{  252, 1178, 0xeff7f7},
-	{  210, 1488, 0x29c6a4},
+    {  250, 1121, 0xd6efe6},
+    {  266, 1147, 0x7bc69c},
+    {  238, 1217, 0xa4bece},
+    {  271, 1461, 0x8ccaa4},
+    {  252, 1178, 0xeff7f7},
+    {  210, 1488, 0x29c6a4},
 }
 
 -- 上交按钮
 local uploadButtonColors = {
-	{  267, 1055, 0x9cd7b5},
-	{  261, 1144, 0x8ccaa4},
-	{  237, 1252, 0x42b68c},
-	{  203, 1054, 0x29c6a4},
-	{  201, 1170, 0x29caad},
-	{  205, 1270, 0x31b694},
+    {  267, 1055, 0x9cd7b5},
+    {  261, 1144, 0x8ccaa4},
+    {  237, 1252, 0x42b68c},
+    {  203, 1054, 0x29c6a4},
+    {  201, 1170, 0x29caad},
+    {  205, 1270, 0x31b694},
 }
 
 -- 选择题
 local function selectCallback()
-	logi("selectCallback: start")
-	click(416, 993)
-	mSleep(500)
-	local count = 0
-	while checkMultiColor(selectWrongColors) do
-		count = count + 1
-		if count > 30 then
-			loge("selectCallback: wrong too many times")
-			vibratorTimes()
-			lua_exit()
-		end
-		-- 点击屏幕中间，让对话框小时
-		click(display.center)
-		mSleep(500)
-		-- 答错了，继续,点击200环任务
-		click(764, 1647)
-		mSleep(1000)
-		if checkMultiColor(selectButtonColors) then
-			-- 选择题弹出来了
-			click(416, 993)
-			mSleep(500)
-		else
-			-- 选择题没弹出来
-			loge("selectCallback: question do not open")
-			vibratorTimes()
-			lua_exit()
-		end
-	end
-	logi("selectCallback: finish")
-	return true
+    Log.i("selectCallback: start")
+    click(416, 993)
+    mSleep(500)
+    local count = 0
+    while checkMultiColor(selectWrongColors) do
+        count = count + 1
+        if count > 30 then
+            Log.e("selectCallback: wrong too many times")
+            vibratorTimes()
+            lua_exit()
+        end
+        -- 点击屏幕中间，让对话框小时
+        click(display.center)
+        mSleep(500)
+        -- 答错了，继续,点击200环任务
+        click(764, 1647)
+        mSleep(1000)
+        if checkMultiColor(selectButtonColors) then
+            -- 选择题弹出来了
+            click(416, 993)
+            mSleep(500)
+        else
+            -- 选择题没弹出来
+            Log.e("selectCallback: question do not open")
+            vibratorTimes()
+            lua_exit()
+        end
+    end
+    Log.i("selectCallback: finish")
+    return true
 end
 
 local function buyPet()
-	logi("buyPet: start")
-	-- 横屏状态下最后一个需求标记的坐标
-	local taskSignColors = {
-		{  236, 1185, 0xffe394},
-		{  248, 1203, 0xffefad},
-		{  238, 1212, 0xf7d27b},
-		{  234, 1249, 0xffca8c},
-		{  230, 1261, 0xffba8c},
-		{  221, 1274, 0xffc2a4},
-	}
-	-- 当前页寻找满足条件的宠物
-	local function findPet()
-		local width, height = 156, 475
-		for i = 0, 7 do
-			local colors = clone(taskSignColors)
-			for _, v in ipairs(colors) do
-				v[1] = v[1] + width * (i % 4)
-				v[2] = v[2] - math.floor(i / 4)
-			end
-			if multiColor(colors) then
-				-- 找到需求的标记，点击购买
-				click(colors[1][1], colors[1][2] + 200)
-				mSleep(1000)
-				if checkMultiColor(buyPetButtonColors) then
-					click(239, 1294)
-					mSleep(500)
-					return true
-				else
-					loge("buyPet: buy dialog not open")
-					vibratorTimes()
-					lua_exit()
-				end
-			end
-		end
-		return false
-	end
+    Log.i("buyPet: start")
+    -- 横屏状态下最后一个需求标记的坐标
+    local taskSignColors = {
+        {  236, 1185, 0xffe394},
+        {  248, 1203, 0xffefad},
+        {  238, 1212, 0xf7d27b},
+        {  234, 1249, 0xffca8c},
+        {  230, 1261, 0xffba8c},
+        {  221, 1274, 0xffc2a4},
+    }
+    -- 当前页寻找满足条件的宠物
+    local function findPet()
+        local width, height = 156, 475
+        for i = 0, 7 do
+            local colors = clone(taskSignColors)
+            for _, v in ipairs(colors) do
+                v[1] = v[1] + width * (i % 4)
+                v[2] = v[2] - math.floor(i / 4)
+            end
+            if multiColor(colors) then
+                -- 找到需求的标记，点击购买
+                click(colors[1][1], colors[1][2] + 200)
+                mSleep(1000)
+                if checkMultiColor(buyPetButtonColors) then
+                    click(239, 1294)
+                    mSleep(500)
+                    return true
+                else
+                    Log.e("buyPet: buy dialog not open")
+                    vibratorTimes()
+                    lua_exit()
+                end
+            end
+        end
+        return false
+    end
 
-	local count = 0
-	while count < 10 do
-		if findPet() then
-			logi("buyPet: finish")
-			return true
-		else
-			-- 这一页没有满足需求的，翻页
-			click(117, 1587)
-			mSleep(500)
-			count = count + 1
-		end
-	end
+    local count = 0
+    while count < 10 do
+        if findPet() then
+            Log.i("buyPet: finish")
+            return true
+        else
+            -- 这一页没有满足需求的，翻页
+            click(117, 1587)
+            mSleep(500)
+            count = count + 1
+        end
+    end
 
-	loge("buyPet: not find pet")
-	lua_exit()
+    Log.e("buyPet: not find pet")
+    lua_exit()
 end
 
 -- 监视帮派任务
 function watchTaskChains(finishCallback)
-    logi("watchTaskChains: start")
+    Log.i("watchTaskChains: start")
     local finished = false
 
     local fightEvent = createMultiColorEvent(fightButtonColors, nil, function()
@@ -179,7 +179,7 @@ function watchTaskChains(finishCallback)
         click(267, 1055)
     end)
     -- local stopEvent = createMultiColorEvent(finishedColors, 6, function()
-    --     logi("watchTaskChains: finished")
+    --     Log.i("watchTaskChains: finished")
     --     -- 点击屏幕中央，让完成的对话框消失
     --     click(display.center)
     --     finished = true
@@ -198,10 +198,14 @@ function watchTaskChains(finishCallback)
     end
 end
 
--- 直接调用
-if ... == nil then
-    startLog("dhxy")
+function main()
+    Log.start("dhxy")
     watchTaskChains(function()
         vibratorTimes()
     end)
+end
+
+-- 直接调用
+if ... == nil then
+    xpcallCustom(main)
 end
