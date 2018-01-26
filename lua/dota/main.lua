@@ -113,7 +113,7 @@ local function save()
 
     click(780, 988)
     -- 等待一定时间，等待保存的动画停止
-    mSleep(1000)
+    mSleep(2000)
     -- 如果弹出对话框，说明另一项减得很多，正常应该点确定
     -- TODO: 但是也有可能是脚本出bug，为了稳妥先停止
     if isColor(406, 900, 0x6b4f38, 95) then
