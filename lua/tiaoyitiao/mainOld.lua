@@ -162,7 +162,7 @@ local function main()
     local i = 0
     while true do
         i = i + 1
-        snapshot(string.format("/sdcard/TouchSprite/log/%d.png", i), 0, 0, display.width - 1, display.height - 1)
+        snapshot(string.format("%s/%d.png", Log.logPath, i), 0, 0, display.width - 1, display.height - 1)
         Log.d("start loop %d", i)
         local time
         if firstLoop then

@@ -33,3 +33,39 @@ local function multiColor(data, sim)
     end
     return true
 end
+
+-- 手机纵向坐标转变横向坐标
+function transToH(posx, posy)
+    return posy, display.width - posx
+end
+
+-- 手机纵向区域转变横向区域
+function transRectToH(posx1, posy1, posx2, posy2)
+    return posy1, display.width - posx2, posy2, display.width - posx1
+end
+
+-- 手机横向坐标转成纵向坐标
+function transToV(posx, posy)
+    return display.width - posy, posx
+end
+
+-- 手机横向区域转成纵向区域
+function transRectToV(posx1, posy1, posx2, posy2)
+    return display.width - posy2, posx1, display.width - posy1, posx2
+end
+
+-- 有时候按横屏量的坐标, 需要用这个函数转化一下
+-- local selectButtonColors = {
+--     {  994,  665, 0xf7db73},
+--     { 1001,  666, 0x734129},
+-- }
+function transColorsToV(colors)
+    local result = {}
+    for _, v in ipairs(colors) do
+        local data = {}
+        data[1], data[2] = transToV(v[1], v[2])
+        data[3] = v[3]
+        table.insert(result, data)
+    end
+    return result
+end

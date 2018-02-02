@@ -107,7 +107,7 @@ local function main()
     while true do
         i = i + 1
         if DEBUG then
-            snapshotEx(tostring(i))
+            snapshotFullScreen(tostring(i))
         end
         Log.i("start loop %d", i)
         local time
@@ -144,4 +144,4 @@ local function main()
     end
 end
 
-xpcallCustom(main)
+xpcallEx(main)

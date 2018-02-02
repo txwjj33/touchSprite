@@ -7,19 +7,19 @@
 require("log")
 require("mathEx")
 require("luaEx")
+require("condition")
 require("TSLib")
 
 DEBUG = false
 
-display = {}
+function pos(x, y)
+    return {x = x, y = y}
+end
 
--- 默认手机处于纵向状态，屏幕的左上角是（0,0），往右+x, 往下+y
--- width是1080，height是1920
--- init(rotate,bid)，设置屏幕方向
--- rotate: 必填，屏幕方向，0-竖屏，1-home键在右边，2-home键在左边
--- bid: 选填，目标程序的Bundle ID，填写"0"时自动使用当前运行的应用
--- 调用init不会影响display的width和height，
--- 所有屏幕方向下都是左上角为原点，所以init(1)是x最大值是1920
+-- 默认手机处于纵向状态, 屏幕的左上角是(0,0), 往右+x, 往下+y
+-- width是1080, height是1920
+-- 调用init后的对应关系在下面说明
+display = {}
 local function initDisplay()
     local width, height = getScreenSize()
     display.size               = {width = width, height = height}
@@ -45,15 +45,52 @@ local function initDisplay()
     display.top_center         = pos(display.cx, display.top)
     display.top_bottom         = pos(display.cx, display.bottom)
 end
+initDisplay()
+
+-- 重写init函数, 保存rotate的值
+-- rotate: 必填, 屏幕方向, 0-竖屏, 1-home键在右边, 2-home键在左边
+-- bid: 选填, 目标程序的Bundle ID, 填写"0"时自动使用当前运行的应用
+-- 调用init不会影响display的width和height
+-- 所有屏幕方向下都是左上角为原点, 所以init(1)时x最大值是1920
+local initRotate = 0
+local initOld = init
+init = function(rotate, bid)
+    initRotate = rotate
+    if bid then
+        initOld(rotate, bid)
+    else
+        initOld(rotate)
+    end
+end
+
+-- 全屏截图
+function snapshotFullScreen(fileName)
+    local snapshotName = string.format("%s/%s.png", Log.logPath, fileName)
+    if initRotate == 0 then
+        snapshot(snapshotName, 0, 0, display.width - 1, display.height - 1)
+    else
+        snapshot(snapshotName, 0, 0, display.height - 1, display.width - 1)
+    end
+end
 
 -- 把x, y 坐标加上一个差值求得新的colors
-function createNewColors(colors, xMargin, yMargin)
+function getColorsByMargin(colors, xMargin, yMargin)
     local newColors = {}
     for _, v in ipairs(colors) do
         local data = {[1] = v[1] + xMargin, [2] = v[2] + yMargin, [3] = v[3]}
         table.insert(newColors, data)
     end
     return newColors
+end
+
+-- 两个参数, 是x, y
+-- 一个参数, 是pos类型的
+function click(param1, param2)
+    if param2 then
+        tap(param1, param2)
+    else
+        tap(param1.x, param1.y)
+    end
 end
 
 -- 依次点击多个点
@@ -64,9 +101,11 @@ function clickMultiPoint(points)
     end
 end
 
--- 多次震动，默认四次
+-- 多次震动
 function vibratorTimes(times)
-    times = times or 4
+    -- debug的时候为了安静，只震动一次
+    local defaultTimes = DEBUG and 1 or 4
+    times = times or defaultTimes
     for i = 1, times do
         if i > 1 then mSleep(1000) end
         vibrator()
@@ -91,78 +130,11 @@ function unlockPhone()
     mSleep(4000)
 end
 
-function pos(x, y)
-    return {x = x, y = y}
-end
-
--- 两个参数，是x, y
--- 一个参数，是pos类型的
-function click(param1, param2)
-    if param2 then
-        tap(param1, param2)
-    else
-        tap(param1.x, param1.y)
-    end
-end
-
-function errorAndExit(msg)
-    if msg then Log.e(msg) end
+function errorAndExit(format, ...)
+    if format then Log.e(format, ...) end
+    snapshotFullScreen("errorAndExit")
     vibratorTimes()
     lua_exit()
-end
-
--- 手机纵向坐标转变横向坐标
-function transToH(posx, posy)
-    return posy, display.width - posx
-end
-
--- 手机纵向区域转变横向区域
-function transRectToH(posx1, posy1, posx2, posy2)
-    return posy1, display.width - posx2, posy2, display.width - posx1
-end
-
--- 手机横向坐标转成纵向坐标
-function transToV(posx, posy)
-    return display.width - posy, posx
-end
-
--- 手机横向区域转成纵向区域
-function transRectToV(posx1, posy1, posx2, posy2)
-    return display.width - posy2, posx1, display.width - posy1, posx2
-end
-
--- 有时候按横屏量的坐标，需要用这个函数转化一下
--- local selectButtonColors = {
---     {  994,  665, 0xf7db73},
---     { 1001,  666, 0x734129},
--- }
-function transColorsToV(colors)
-    local result = {}
-    for _, v in ipairs(colors) do
-        local data = {}
-        data[1], data[2] = transToV(v[1], v[2])
-        data[3] = v[3]
-        table.insert(result, data)
-    end
-    return result
-end
-
-function clone(object)
-    local lookup_table = {}
-    local function _copy(object)
-        if type(object) ~= "table" then
-            return object
-        elseif lookup_table[object] then
-            return lookup_table[object]
-        end
-        local newObject = {}
-        lookup_table[object] = newObject
-        for key, value in pairs(object) do
-            newObject[_copy(key)] = _copy(value)
-        end
-        return setmetatable(newObject, getmetatable(object))
-    end
-    return _copy(object)
 end
 
 -- s为单位
@@ -170,18 +142,7 @@ function sleep(time)
     mSleep(time * 1000)
 end
 
--- init的参数
-function snapshotEx(fileName, initParam)
-    initParam = initParam or 0
-    local snapshotName = string.format("/sdcard/TouchSprite/log/%s.png", fileName)
-    if initParam == 0 then
-        snapshot(snapshotName, 0, 0, display.width - 1, display.height - 1)
-    else
-        snapshot(snapshotName, 0, 0, display.height - 1, display.width - 1)
-    end
-end
-
-function xpcallCustom(functionName)
+function xpcallEx(functionName)
     local function traceback(errorMessage)
         Log.i(errorMessage)
         -- 主动结束脚本
@@ -191,9 +152,73 @@ function xpcallCustom(functionName)
         debug.tracebackex()
         Log.i("-----------------------------------------------------------------------")
         vibratorTimes()
-        -- 这里系统会自动结束，因此不需要手动调用lua_exit
+        -- 这里系统会自动结束, 因此不需要手动调用lua_exit
     end
     xpcall(functionName, traceback)
 end
 
-initDisplay()
+local currentBid = nil
+function runAppEx(bid)
+    currentBid = bid
+    if isFrontApp(bid) == 0 then
+        -- 启动前需要有延时, 否则可能失败
+        mSleep(2000)
+        local result = runApp(bid)
+        if result ~= 0 then
+            errorAndExit("runAppEx %s failed: %d", bid, result)
+        end
+        mSleep(5000)
+        local count = 0
+        while isFrontApp(bid) == 0 do
+            count = count + 1
+            if count >= 5 then
+                errorAndExit("runAppEx %s failed: timeout", bid)
+            end
+            mSleep(5000)
+        end
+        Log.i("runAppEx %s success!", bid)
+        return true
+    else
+        Log.i("runAppEx %s success: already in front", bid)
+        return true
+    end
+end
+
+-- 检查当前程序是否在前台
+-- 如果不在的话，重新启动
+-- bid为空时，使用runAppEx的bid
+function checkAppFront(bid)
+    if not bid and not currentBid then
+        errorAndExit("checkAppFront error: no bid")
+    end
+    bid = bid or currentBid
+    if isFrontApp(bid) == 0 then
+        Log.w("app not in front, restart")
+        return runAppEx()
+    end
+end
+
+local ocrTextNum = 0
+function ocrTextDebug(x1, y1, x2, y2, flag, whiteList)
+    local text = ocrText(x1, y1, x2, y2, flag, whiteList)
+    if DEBUG then
+        ocrTextNum = ocrTextNum + 1
+        local fileName = string.format("%s/%s_ocrText_%03d.png", Log.logPath, Log.getLogName(), ocrTextNum)
+        snapshot(fileName, x1, y1, x2, y2)
+        Log.d("ocrTextDebug: %d-%s", ocrTextNum, text)
+    end
+    return text
+end
+
+local findMultiColorNum = 0
+function findMultiColorInRegionFuzzyDebug(color, posandcolor, degree, x1, y1, x2, y2)
+    local x, y = findMultiColorInRegionFuzzy(color, posandcolor, degree, x1, y1, x2, y2)
+    if DEBUG then
+        findMultiColorNum = findMultiColorNum + 1
+        local fileName = string.format("%s/%s_findMultiColor_%03d.png", Log.logPath,
+            Log.getLogName(), findMultiColorNum)
+        snapshot(fileName, x1, y1, x2, y2)
+        Log.d("findMultiColorInRegionFuzzyEx: %d-%d-%d", findMultiColorNum, x, y)
+    end
+    return x, y
+end

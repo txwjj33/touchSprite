@@ -108,7 +108,7 @@ end
 local function save()
     Log.d("needSave")
     if DEBUG then
-        snapshotEx(tostring(count), 1)
+        snapshotFullScreen(tostring(count))
     end
 
     click(780, 988)
@@ -166,4 +166,4 @@ local function main()
     end
 end
 
-xpcallCustom(main)
+xpcallEx(main)

@@ -5,6 +5,7 @@
 ]]
 
 Log = {}
+Log.logPath = "/sdcard/TouchSprite/log"
 
 local logName = nil
 
@@ -53,4 +54,8 @@ function Log.printArgs(...)
         str = str .. tostring(v)
     end
     Log.d(str)
+end
+
+function Log.getLogName()
+    return logName
 end
