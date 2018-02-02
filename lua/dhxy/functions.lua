@@ -4,7 +4,6 @@
 备注:
 ]]
 
-require("utils")
 require("dhxy.constants")
 
 function enterdhxy()

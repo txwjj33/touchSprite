@@ -4,7 +4,7 @@
 备注: 洗练要某两项属性之和增加的脚本
 ]]
 
-require("utils")
+require("init")
 require("dota.config")
 
 local appName = "dota"

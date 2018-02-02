@@ -4,7 +4,7 @@
 备注: 由于背景颜色过段时间会变成完全不同的颜色，所以不能基于背景颜色来编码
 ]]
 
-require("utils")
+require("init")
 
 -- 初始的棋子和物体位置固定
 local initChessPos = pos(337, 1110)
@@ -162,7 +162,7 @@ local function main()
     local i = 0
     while true do
         i = i + 1
-        snapshot(string.format("%s/%d.png", Log.logPath, i), 0, 0, display.width - 1, display.height - 1)
+        snapshot(string.format("%s/%d.png", Log.getLogPath(), i), 0, 0, display.width - 1, display.height - 1)
         Log.d("start loop %d", i)
         local time
         if firstLoop then

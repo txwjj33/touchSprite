@@ -5,12 +5,7 @@
 ]]
 
 require("log")
-require("mathEx")
-require("luaEx")
-require("condition")
 require("TSLib")
-
-DEBUG = false
 
 function pos(x, y)
     return {x = x, y = y}
@@ -65,7 +60,7 @@ end
 
 -- 全屏截图
 function snapshotFullScreen(fileName)
-    local snapshotName = string.format("%s/%s.png", Log.logPath, fileName)
+    local snapshotName = string.format("%s/%s.png", Log.getLogPath(), fileName)
     if initRotate == 0 then
         snapshot(snapshotName, 0, 0, display.width - 1, display.height - 1)
     else
@@ -203,7 +198,7 @@ function ocrTextDebug(x1, y1, x2, y2, flag, whiteList)
     local text = ocrText(x1, y1, x2, y2, flag, whiteList)
     if DEBUG then
         ocrTextNum = ocrTextNum + 1
-        local fileName = string.format("%s/%s_ocrText_%03d.png", Log.logPath, Log.getLogName(), ocrTextNum)
+        local fileName = string.format("%s/%s_ocrText_%03d.png", Log.getLogPath(), Log.getLogName(), ocrTextNum)
         snapshot(fileName, x1, y1, x2, y2)
         Log.d("ocrTextDebug: %d-%s", ocrTextNum, text)
     end
@@ -215,7 +210,7 @@ function findMultiColorInRegionFuzzyDebug(color, posandcolor, degree, x1, y1, x2
     local x, y = findMultiColorInRegionFuzzy(color, posandcolor, degree, x1, y1, x2, y2)
     if DEBUG then
         findMultiColorNum = findMultiColorNum + 1
-        local fileName = string.format("%s/%s_findMultiColor_%03d.png", Log.logPath,
+        local fileName = string.format("%s/%s_findMultiColor_%03d.png", Log.getLogPath(),
             Log.getLogName(), findMultiColorNum)
         snapshot(fileName, x1, y1, x2, y2)
         Log.d("findMultiColorInRegionFuzzyEx: %d-%d-%d", findMultiColorNum, x, y)

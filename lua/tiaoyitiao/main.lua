@@ -4,7 +4,7 @@
 备注:
 ]]
 
-require("utils")
+require("init")
 
 local initChessPos, initItemPos   -- 初始的棋子和物体位置固定
 local chessColor   -- 棋子的颜色

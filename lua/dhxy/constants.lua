@@ -4,7 +4,7 @@
 备注:
 ]]
 
-require("utils")
+require("init")
 
 gDHXYBid = "com.netease.dhxy.wdj"
 

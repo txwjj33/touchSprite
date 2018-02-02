@@ -5,7 +5,6 @@
 ]]
 
 Log = {}
-Log.logPath = "/sdcard/TouchSprite/log"
 
 local logName = nil
 
@@ -58,4 +57,8 @@ end
 
 function Log.getLogName()
     return logName
+end
+
+function Log.getLogPath()
+    return "/sdcard/TouchSprite/log"
 end
