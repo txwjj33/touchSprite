@@ -24,8 +24,22 @@ local buyEvent = Condition.createEvent(buyCondition, function()
     click(1429, 892)
 end)
 
+-- 回答问题的第二个按钮
+local answerColors = {
+    {  976,  633, 0xfffbf7},
+    {  995,  659, 0xffdf63},
+    { 1007,  656, 0x844931},
+    { 1019,  683, 0xce9e7b},
+    {  995,  684, 0xf7a663},
+    {  999,  680, 0x7b4129},
+}
+local answerEvent = Condition.createColorsEvent(answerColors, function()
+    Log.d("handle answerEvent")
+    click(993, 664)
+end)
+
 -- 帮派和师门任务的data生成函数
-function taskDataHelper(name, finishText)
+local function taskDataHelper(name, finishText)
     local data = {}
     data.name = name
     local startCondition = Condition.textCondition(1446, 640, 1593, 678, 1, name)
@@ -47,8 +61,33 @@ function taskDataHelper(name, finishText)
     return data
 end
 
+-- 大理寺答题
+local function da_li_si()
+    local data = {}
+    data.name = "大理寺答题"
+    data.ocrName = "大理寺答"
+    data.interval = 4
+    local startCondition = Condition.textCondition(1376, 640, 1517, 678, 1, "我要参加")
+    local startEvent = Condition.createEvent(startCondition, function()
+        Log.d("handle startEvent")
+        click(firstButtonPos)
+    end)
+    data.loop = function()
+        local events = {answerEvent, startEvent}
+        for _, event in ipairs(events) do
+            if Condition.checkEvent(event) then break end
+        end
+    end
+    data.finishCondition = Condition.textCondition(103, 784, 245, 824, 1, "你已完成")
+    data.finishCallback = function()
+        -- 点击屏幕中央，让完成的对话框消失
+        click(display.center)
+    end
+    runTask(data)
+end
+
 -- 五环任务
-function wu_huan()
+local function wu_huan()
     local data = {}
     data.name = "五环任务"
     data.loop = function()
@@ -77,6 +116,7 @@ local function main()
     if not initApp() then return end
     runTask(taskDataHelper("帮派任务", "英雄今天"))
     runTask(taskDataHelper("师门任务", "徒儿你已"))
+    da_li_si()
     wu_huan()
     vibratorTimes()
 end
