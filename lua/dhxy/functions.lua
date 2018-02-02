@@ -29,11 +29,31 @@ function enterdhxy()
     end
 end
 
+-- 大话西游的时间，过了凌晨5点才算新的一天
+function getDateInDHXY()
+    local hour = tonumber(os.date("%H"))
+    -- 不到凌晨5点时, 减掉5个小时, 返回前一天的日期
+    local time = (hour >= 5) and os.time() or os.time() - 5 * 60 * 60
+    return os.date("%Y_%m_%d", time)
+end
+
+-- 初始化缓存, 将不是当天的数据删除
+function initCacheData()
+    CacheData.setFileName("dhxy")
+    local data = CacheData.getData()
+    local date = getDateInDHXY()
+    for k, v in ipairs(data) do
+        -- 不是今天的任务记录删除
+        if v ~= date then data[v] = nil end
+    end
+end
+
 function initApp()
     Log.start("dhxy")
     Log.i("script begin!")
     unlockPhone()
     init(1)
+    initCacheData()
     if runAppEx(gDHXYBid) then
         return enterdhxy()
     else
@@ -139,10 +159,18 @@ end
 -- finishCondition: 完成条件
 -- finishCallback: 完成回调, 可以为空
 -- timeout: 任务超时时间, 从点击开始按钮时算起, 默认15分钟
+-- repeatable: 任务是否课重复的, 比如200环任务是可以重复的
 --  TODO(优化): startEvent, 如果任一个event监测成功，那么置started标记，startEvent事件不再监测，节省时间
 function runTask(data)
+    if CacheData.getStringForKey(data.name, "") == getDateInDHXY() then
+        Log.i("task %s already finish", data.name)
+        return
+    end
     Log.i("start task %s", data.name)
-    if checkTaskFinished(data.ocrName or data.name, data.ocrX2) then return end
+    if checkTaskFinished(data.ocrName or data.name, data.ocrX2) then
+        CacheData.setStringForKey(data.name, getDateInDHXY())
+        return
+    end
 
     local startTime = os.time()
     local interval = data.interval or 10
@@ -161,5 +189,9 @@ function runTask(data)
         sleep(interval)
     end
     Log.i("finish task %s", data.name)
+    if not data.repeatable then
+        -- 不可重复任务才存储
+        CacheData.setStringForKey(data.name, getDateInDHXY())
+    end
     if data.finishCallback then data.finishCallback() end
 end

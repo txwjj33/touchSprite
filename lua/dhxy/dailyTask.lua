@@ -78,6 +78,7 @@ local function main()
     runTask(taskDataHelper("帮派任务", "英雄今天"))
     runTask(taskDataHelper("师门任务", "徒儿你已"))
     wu_huan()
+    vibratorTimes()
 end
 
 -- 直接调用

@@ -138,6 +138,7 @@ function runTaskChains()
     data.name = "200环任务"
     data.ocrX2 = 548
     data.timeout = 2 * 60 * 60
+    data.repeatable = true
     data.finishCondition = function()
        return false
     end
@@ -170,6 +171,7 @@ end
 function main()
     if not initApp() then return end
     runTaskChains()
+    vibratorTimes()
 end
 
 -- 直接调用
